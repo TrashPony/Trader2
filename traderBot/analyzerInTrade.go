@@ -31,7 +31,7 @@ import "../traderInfo"
  * не снимать запрос если цена топа такая же как ты выставил
  */
 
-func AnalyzerInTrade(market *traderInfo.Market) bool {
+func AnalyzerInTrade(market *traderInfo.Market) (buy bool, fast bool) {
 
 	Bid, _ := market.MarketSummary.Bid.Float64()
 	Ask, _ := market.MarketSummary.Ask.Float64()

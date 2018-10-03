@@ -27,14 +27,25 @@ func TradeBuyBot(account *traderInfo.Account) {
 
 				volume, ok := market.MarketSummary.Volume.Float64()
 				availableBTC, btcOk := account.GetAvailableCurrencyBalance("BTC").Float64()
-				priceByu, priceByuOk := market.OrdersBuy[0].Rate.Float64()
 
-				if ok && volume > 20 && AnalyzerInTrade(market) && btcOk && priceByuOk {
-					fee := availableBTC * 0.0026
+				buy, fast := AnalyzerInTrade(market)
+				var priceByu float64
+				var priceByuOk bool
+
+				if fast { // если фаст значит в рынок надо войти как можно быстрее )
+					priceByu, priceByuOk = market.OrdersSell[0].Rate.Float64()
+				} else {
+					priceByu, priceByuOk = market.OrdersBuy[0].Rate.Float64()
+					priceByu += 0.00000001 // наращиваем 1 сатоши что бы стать самым первым ордером в стакане
+				}
+
+				if ok && volume > 20 && buy && btcOk && priceByuOk {
+					fee := availableBTC * FEE
 					quantity := (availableBTC - fee) / priceByu
 
 					uuidBuyOrder, err = market.BuyLimit(decimal.NewFromFloat(quantity), decimal.NewFromFloat(priceByu))
 					if err != nil {
+						println(err.Error())
 						continue
 					}
 
@@ -49,14 +60,14 @@ func TradeBuyBot(account *traderInfo.Account) {
 
 			orders, err := buyMarket.GetOpenOrders()
 			if err != nil {
-
+				println(err.Error())
 			}
 
 			for _, order := range orders {
 				if order.OrderUuid == uuidBuyOrder { // если находим заказ, значит не купили и снимаем его
 					err = buyMarket.CancelOrder(uuidBuyOrder)
 					if err != nil {
-
+						println(err.Error())
 					} else {
 						uuidBuyOrder = ""
 						buyMarket = nil

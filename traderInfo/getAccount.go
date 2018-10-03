@@ -13,11 +13,13 @@ type Account struct {
 func GetAccount() *Account {
 	balances, err := GetBittrex().GetBalances()
 	if err != nil {
+		println(err.Error())
 		return nil
 	}
 
 	orderHistory, err := GetBittrex().GetOrderHistory("BTC-DOGE")
 	if err != nil {
+		println(err.Error())
 		return nil
 	}
 
@@ -29,20 +31,23 @@ func GetAccount() *Account {
 func (account *Account) GetAvailableCurrencyBalance(currencyName string) *decimal.Decimal {
 	balance, err := GetBittrex().GetBalance(currencyName)
 	if err != nil {
-		return &balance.Available
+		println(err.Error())
+		return nil
 	}
 
-	return nil
+	return &balance.Available
 }
 
 func (account *Account) UpdateAccount() error {
 	balances, err := GetBittrex().GetBalances()
 	if err != nil {
+		println(err.Error())
 		return err
 	}
 
 	orderHistory, err := GetBittrex().GetOrderHistory("BTC-DOGE")
 	if err != nil {
+		println(err.Error())
 		return err
 	}
 

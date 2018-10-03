@@ -4,6 +4,8 @@ import (
 	"../traderInfo"
 )
 
+const FEE = 0.0026 // в процентах 0.26, и сделано множителем тоесть поделено на 100
+
 func Run(account *traderInfo.Account) {
 
 	availableMarket := make([]*traderInfo.Market, 0)

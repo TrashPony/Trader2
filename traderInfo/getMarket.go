@@ -40,6 +40,7 @@ func GetMarket(MarketName string) *Market {
 }
 
 func GetAllMarket() []*Market {
+	// TODO перенести это в торгового бота что бы не ждать пока получаться все рынки
 	markets, err := GetBittrex().GetMarkets()
 	if err != nil {
 
