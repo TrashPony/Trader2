@@ -1,10 +1,12 @@
 package traderBot
 
-import "../traderInfo"
+import (
+	"../traderInfo"
+	"github.com/shopspring/decimal"
+	"strings"
+)
 
-import "time"
-
-func TradeSellBot(market *traderInfo.Market, account *traderInfo.Account) {
+func TradeSellBot(market *traderInfo.Market, account *traderInfo.Account, priceBuy decimal.Decimal) {
 
 	var uuidSellOrder string
 
@@ -17,15 +19,16 @@ func TradeSellBot(market *traderInfo.Market, account *traderInfo.Account) {
 		if AnalyzerOutTrade(market) { // провека на необходимость выхода из рынка
 			// тут пыатется сбыть по цене 1го ордера покупки, это надо делать если надо очень быстро выйти из трейда
 			// TODO в идиале надо пытаться продавать чуть дешевле чем первый ордер на продажу
-			uuidSellOrder, err = market.SellLimit(account.GetAvailableCurrencyBalance(market.CurrencyPair), &market.OrdersBuy[0].Rate)
+			// TODO проверки на цену покупки и профита
+			uuidSellOrder, err = market.SellLimit(account.GetAvailableCurrencyBalance(strings.Split(market.CurrencyPair, "-")[1]), &market.OrdersBuy[0].Rate)
 			if err != nil {
-				continue // TODO
+
 			}
 		} else {
 			if uuidSellOrder != "" {
 				err = market.CancelOrder(uuidSellOrder)
 				if err != nil {
-					// TODO
+
 				} else {
 					uuidSellOrder = ""
 				}
@@ -35,7 +38,5 @@ func TradeSellBot(market *traderInfo.Market, account *traderInfo.Account) {
 		if account.GetAvailableCurrencyBalance(market.CurrencyPair).IsZero() {
 			return // если монет не осталось выходим из трейда
 		}
-
-		time.Sleep(200 * time.Millisecond) // на всякий случай задержка, а то забанят еще)
 	}
 }

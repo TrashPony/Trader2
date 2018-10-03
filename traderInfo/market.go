@@ -1,8 +1,8 @@
 package traderInfo
 
 import (
-	"github.com/toorop/go-bittrex"
 	"github.com/shopspring/decimal"
+	"github.com/toorop/go-bittrex"
 )
 
 type Market struct {
@@ -49,8 +49,8 @@ func (market *Market) UpdateMarket() error {
 	return nil
 }
 
-func (market *Market) BuyLimit(quantity, rate *decimal.Decimal) (string, error) {
-	uuid, err := GetBittrex().BuyLimit(market.CurrencyPair, *quantity, *rate)
+func (market *Market) BuyLimit(quantity, rate decimal.Decimal) (string, error) {
+	uuid, err := GetBittrex().BuyLimit(market.CurrencyPair, quantity, rate)
 	return uuid, err
 }
 
@@ -59,7 +59,12 @@ func (market *Market) SellLimit(quantity, rate *decimal.Decimal) (string, error)
 	return uuid, err
 }
 
-func (market *Market) CancelOrder(uuid string) (error) {
+func (market *Market) GetOpenOrders() ([]bittrex.Order, error) {
+	orders, err := GetBittrex().GetOpenOrders(market.CurrencyPair)
+	return orders, err
+}
+
+func (market *Market) CancelOrder(uuid string) error {
 	err := GetBittrex().CancelOrder(uuid)
 	return err
 }

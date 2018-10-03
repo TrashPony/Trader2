@@ -1,13 +1,13 @@
 package traderInfo
 
 import (
-	"github.com/toorop/go-bittrex"
 	"github.com/shopspring/decimal"
+	"github.com/toorop/go-bittrex"
 )
 
 type Account struct {
-	Balances        []bittrex.Balance `json:"balances"`
-	OrderHistory    []bittrex.Order   `json:"order_history"`
+	Balances     []bittrex.Balance `json:"balances"`
+	OrderHistory []bittrex.Order   `json:"order_history"`
 }
 
 func GetAccount() *Account {
@@ -26,8 +26,8 @@ func GetAccount() *Account {
 	return &account
 }
 
-func (account *Account) GetAvailableCurrencyBalance(marketName string) *decimal.Decimal {
-	balance, err := GetBittrex().GetBalance("DOGE")
+func (account *Account) GetAvailableCurrencyBalance(currencyName string) *decimal.Decimal {
+	balance, err := GetBittrex().GetBalance(currencyName)
 	if err != nil {
 		return &balance.Available
 	}
