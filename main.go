@@ -1,25 +1,31 @@
 package main
 
 import (
-	"./trader"
 	"./webSocket"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"./traderInfo"
+	"./traderBot"
 )
 
 func main() {
-	trader.GetMarket("BTC-BTG")
 
-	router := mux.NewRouter()
-	router.HandleFunc("/ws", webSocket.HandleConnections)
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/")))
+	account := traderInfo.GetAccount()
+	if account != nil {
 
-	go webSocket.Sender()
+		traderBot.Run(account)
 
-	log.Println("http server started on :8081")
-	err := http.ListenAndServe(":8081", router)
-	if err != nil {
-		log.Panic(err)
+		router := mux.NewRouter()
+		router.HandleFunc("/ws", webSocket.HandleConnections)
+		router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/")))
+
+		go webSocket.Sender()
+
+		log.Println("http server started on :8081")
+		err := http.ListenAndServe(":8081", router)
+		if err != nil {
+			log.Panic(err)
+		}
 	}
 }
