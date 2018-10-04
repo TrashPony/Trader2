@@ -1,6 +1,6 @@
-package traderBot
+package Analyze
 
-import "../traderInfo"
+import "../../traderInfo"
 
 /**
  * Created by trash on 09.08.2017.
@@ -31,7 +31,11 @@ import "../traderInfo"
  * не снимать запрос если цена топа такая же как ты выставил
  */
 
-func AnalyzerInTrade(market *traderInfo.Market) (buy bool, fast bool) {
+type AnalyzerInTrade struct {
+	Name string `json:"name"`
+}
+
+func (analyze *AnalyzerInTrade) Analyze(market *traderInfo.Market) (buy bool, fast bool) {
 
 	Bid, _ := market.MarketSummary.Bid.Float64()
 	Ask, _ := market.MarketSummary.Ask.Float64()
@@ -54,7 +58,7 @@ func AnalyzerInTrade(market *traderInfo.Market) (buy bool, fast bool) {
 	differenceAskBindCheck := differenceAskBind > 0.55 // комисия
 	secondCheck := second < 0.10                       // Второй оредар на покупку
 
-	return secondCheck && differenceAskBindCheck && openOrdersCheck && lastPriceCheck
+	return secondCheck && differenceAskBindCheck && openOrdersCheck && lastPriceCheck, false
 }
 
 func percentageCalculator(a, b float64) (result float64) {

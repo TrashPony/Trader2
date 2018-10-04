@@ -54,8 +54,8 @@ func (market *Market) BuyLimit(quantity, rate decimal.Decimal) (string, error) {
 	return uuid, err
 }
 
-func (market *Market) SellLimit(quantity, rate *decimal.Decimal) (string, error) {
-	uuid, err := GetBittrex().SellLimit(market.CurrencyPair, *quantity, *rate)
+func (market *Market) SellLimit(quantity, rate decimal.Decimal) (string, error) {
+	uuid, err := GetBittrex().SellLimit(market.CurrencyPair, quantity, rate)
 	return uuid, err
 }
 
@@ -67,4 +67,19 @@ func (market *Market) GetOpenOrders() ([]bittrex.Order, error) {
 func (market *Market) CancelOrder(uuid string) error {
 	err := GetBittrex().CancelOrder(uuid)
 	return err
+}
+
+func (market *Market) GetUserOrderHistory() ([]bittrex.Order, error) {
+	orderHistory, err := GetBittrex().GetOrderHistory(market.CurrencyPair)
+	return orderHistory, err
+}
+
+func (market *Market) GetFirstBuyOrder() (bittrex.Orderb, error) {
+	ordersBuy, err := GetBittrex().GetOrderBookBuySell(market.CurrencyPair, "buy")
+	return ordersBuy[0], err
+}
+
+func (market *Market) GetFirstSellOrder() (bittrex.Orderb, error) {
+	ordersSell, err := GetBittrex().GetOrderBookBuySell(market.CurrencyPair, "sell")
+	return ordersSell[0], err
 }
