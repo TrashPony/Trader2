@@ -8,24 +8,23 @@ import (
 
 func (worker *Worker) TradeBuyBot() {
 
+	markets := traderInfo.GetAllMarket()
+
 	uuidBuyOrder := ""
 	var buyRate float64
 	var buyQuantityAlt float64
 
 	for {
 
-		if worker.AvailableBTCCash >= 0.00050000 {
+		if worker.AvailableBTCCash >= 0.0005 {
 
 			var err error
 
 			if uuidBuyOrder == "" && worker.BuyActiveMarket == nil {
-				markets := traderInfo.GetAllMarket()
 
-				if markets == nil {
-					continue
-				}
+				for _, marketName := range markets {
 
-				for _, market := range markets {
+					market := traderInfo.GetMarket(marketName.MarketName)
 
 					volume, ok := market.MarketSummary.Volume.Float64()
 					buy, fast := worker.InTradeStrategy.Analyze(market)
@@ -105,11 +104,13 @@ func (worker *Worker) TradeBuyBot() {
 							}
 						} else {
 							// частичный выкуп
+
 							buyAltCount := buyQuantityAlt - orderQuantity
+							buyQuantityAlt -= buyAltCount
+
 							worker.AddAlt(strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], buyAltCount, buyRate)
 							worker.AvailableBTCCash -= buyAltCount * buyRate
-
-							buyQuantityAlt = buyAltCount
+							worker.SellActiveMarkets[worker.BuyActiveMarket.CurrencyPair] = worker.BuyActiveMarket
 						}
 					}
 				}
@@ -118,6 +119,7 @@ func (worker *Worker) TradeBuyBot() {
 					// выкупили полностью
 					worker.AddAlt(strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], buyQuantityAlt, buyRate)
 					worker.AvailableBTCCash -= buyQuantityAlt * buyRate
+					worker.SellActiveMarkets[worker.BuyActiveMarket.CurrencyPair] = worker.BuyActiveMarket
 
 					uuidBuyOrder = ""
 					worker.BuyActiveMarket = nil

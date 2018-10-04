@@ -1,6 +1,9 @@
 package traderInfo
 
-import "strings"
+import (
+	"github.com/toorop/go-bittrex"
+	"strings"
+)
 
 func GetMarket(MarketName string) *Market {
 	marketSummary, err := GetBittrex().GetMarketSummary(MarketName)
@@ -39,14 +42,12 @@ func GetMarket(MarketName string) *Market {
 	return &market
 }
 
-func GetAllMarket() []*Market {
-	// TODO перенести это в торгового бота что бы не ждать пока получаться все рынки
+func GetAllMarket() []bittrex.Market {
 	markets, err := GetBittrex().GetMarkets()
 	if err != nil {
-
 	}
 
-	allMarket := make([]*Market, 0)
+	allAvailableMarket := make([]bittrex.Market, 0)
 
 	for _, market := range markets {
 
@@ -57,11 +58,11 @@ func GetAllMarket() []*Market {
 				pair[1] == "XMR" ||
 				pair[1] == "ETH" ||
 				pair[1] == "RDD" ||
-				pair[1] == "OCN" { // из за того что рабоатет крайне медленно пока определил 5 валют для торга
-				allMarket = append(allMarket, GetMarket(market.MarketName)) // крайне медленно работает
+				pair[1] == "OCN" {
+				allAvailableMarket = append(allAvailableMarket, market)
 			}
 		}
 	}
 
-	return allMarket
+	return allAvailableMarket
 }

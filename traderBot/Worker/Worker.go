@@ -5,7 +5,12 @@ import (
 	"../Analyze"
 	"strconv"
 	"sync"
+	"io"
+	"crypto/rand"
+	"fmt"
 )
+
+var PoolWorker = make(map[string]*Worker)
 
 type Worker struct {
 	InTradeStrategy   *Analyze.AnalyzerInTrade      `json:"in_trade_strategy"`
@@ -19,10 +24,19 @@ type Worker struct {
 	mx                sync.Mutex
 }
 
-func (worker *Worker) Run() bool {
-	// получить кеш бота, принять анализаторы, сделать проверки на возможность рынка и запуск горутины работы
-	// добавлять их в
-	return true
+func (worker *Worker) Run(fee float64) bool {
+	if worker.AvailableBTCCash >= 0.0005 && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
+
+		worker.Fee = fee
+
+		go worker.TradeBuyBot()
+		go worker.TradeSellBot()
+
+		PoolWorker[newUUID()] = worker
+		return true
+	} else {
+		return false
+	}
 }
 
 type Alt struct {
@@ -48,4 +62,15 @@ func (worker *Worker) RemoveAlt(alt *Alt) {
 
 	key := alt.AltName + ":" + strconv.FormatFloat(alt.Balance, 'f', 6, 64) + ":" + strconv.FormatFloat(alt.BuyPrice, 'f', 6, 64)
 	delete(worker.AltBalances, key)
+}
+
+func newUUID() (string) {
+	uuid := make([]byte, 16)
+	n, err := io.ReadFull(rand.Reader, uuid)
+	if n != len(uuid) || err != nil {
+		return ""
+	}
+	uuid[8] = uuid[8]&^0xc0 | 0x80
+	uuid[6] = uuid[6]&^0xf0 | 0x40
+	return fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:])
 }
