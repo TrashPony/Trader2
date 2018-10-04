@@ -1,8 +1,10 @@
 package Worker
 
 import (
-	"strings"
+	"../Analyze"
+	"fmt"
 	"github.com/shopspring/decimal"
+	"strings"
 )
 
 func (worker *Worker) TradeSellBot() {
@@ -11,14 +13,16 @@ func (worker *Worker) TradeSellBot() {
 	var sellRate float64
 
 	for {
-		for _, market := range worker.SellActiveMarkets { 								     // крутим все активные маркеты где совершили покупку
-			for _, altBalances := range worker.AltBalances { 							     // берем прошлые сделки покупок
-				if altBalances.AltName == strings.Split(market.CurrencyPair, "-")[1] {  // проверяем что алт баланс соотвевтует маркету
+		for _, market := range worker.SellActiveMarkets { // крутим все активные маркеты где совершили покупку
+			for _, altBalances := range worker.AltBalances { // берем прошлые сделки покупок
+				if altBalances.AltName == strings.Split(market.CurrencyPair, "-")[1] { // проверяем что алт баланс соотвевтует маркету
 					var err error
 
 					market.UpdateMarket()
 
-					sell, fast := worker.OutTradeStrategy.Analyze(market) // TODO проверки на цену покупки и профита // TODO проверка на комисию
+					sell, fast, newProfit := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
+
+					altBalances.GrowProfitPrice = newProfit
 
 					if sell {
 
@@ -67,8 +71,9 @@ func (worker *Worker) TradeSellBot() {
 									if err != nil {
 									} else {
 
-										firstRate, okRate :=  first.Rate.Float64()
-										sell, _ := worker.OutTradeStrategy.Analyze(market)
+										firstRate, okRate := first.Rate.Float64()
+										sell, _, newProfit := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
+										altBalances.GrowProfitPrice = newProfit
 
 										if okRate && firstRate < sellRate && sell {
 											// если у первого заказа цена выше чем у наc
@@ -85,8 +90,10 @@ func (worker *Worker) TradeSellBot() {
 								} else {
 									// частичный выкуп
 									buyAltCount := altBalances.Balance - orderQuantity // высчитываем сколько купили
-									worker.AvailableBTCCash += buyAltCount * sellRate // высчитывает заработаные BTC
-									altBalances.Balance -= buyAltCount // отнимать у баланса валюты проданые монеты
+									worker.AvailableBTCCash += buyAltCount * sellRate  // высчитывает заработаные BTC
+									altBalances.Balance -= buyAltCount                 // отнимать у баланса валюты проданые монеты
+
+									fmt.Print("Продалась часть закупа с выгодой ", Analyze.PercentageCalculator(altBalances.ProfitPrice, sellRate))
 								}
 							}
 						}
@@ -94,9 +101,12 @@ func (worker *Worker) TradeSellBot() {
 						if !findOrder {
 							// выкупили полностью
 							worker.AvailableBTCCash += altBalances.Balance * sellRate
-							worker.RemoveAlt(altBalances)
 							uuidSellOrder = ""
 							sellRate = 0
+
+							fmt.Print("Продалось относительно начального закупа с выгодой ", Analyze.PercentageCalculator(altBalances.ProfitPrice, sellRate))
+
+							worker.RemoveAlt(altBalances)
 						}
 					}
 				}

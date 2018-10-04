@@ -9,17 +9,16 @@ const FEE = 0.0026 // в процентах 0.26, и сделано множит
 func Run(account *traderInfo.Account) {
 
 	availableMarket := make([]*traderInfo.Market, 0)
-	var availableBTC float64
 
 	for _, marketBalance := range account.Balances {
 		if !marketBalance.Available.IsZero() && marketBalance.Currency != "BTC" && marketBalance.Currency != "USDT" {
 			availableMarket = append(availableMarket, traderInfo.GetMarket("BTC-"+marketBalance.Currency))
 		} else {
 			var ok bool
-			availableBTC, ok = marketBalance.Available.Float64()
+			account.StartBTC, ok = marketBalance.Available.Float64()
 			if ok && marketBalance.Currency == "BTC" {
 				print("available BTC: ")
-				println(availableBTC)
+				println(account.StartBTC)
 			}
 		}
 	}
@@ -32,7 +31,7 @@ func Run(account *traderInfo.Account) {
 		}
 	}
 
-	if availableBTC > 0.0005 {
+	if account.StartBTC > 0.0005 {
 		// todo создавать ботов и запускать их
 	}
 }

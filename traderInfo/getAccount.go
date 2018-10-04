@@ -6,8 +6,8 @@ import (
 )
 
 type Account struct {
-	Balances     []bittrex.Balance `json:"balances"`
-	OrderHistory []bittrex.Order   `json:"order_history"`
+	Balances []bittrex.Balance `json:"balances"`
+	StartBTC float64           `json:"start_btc"`
 }
 
 func GetAccount() *Account {
@@ -17,13 +17,7 @@ func GetAccount() *Account {
 		return nil
 	}
 
-	orderHistory, err := GetBittrex().GetOrderHistory("BTC-DOGE")
-	if err != nil {
-		println(err.Error())
-		return nil
-	}
-
-	account := Account{Balances: balances, OrderHistory: orderHistory}
+	account := Account{Balances: balances}
 
 	return &account
 }
@@ -45,14 +39,7 @@ func (account *Account) UpdateAccount() error {
 		return err
 	}
 
-	orderHistory, err := GetBittrex().GetOrderHistory("BTC-DOGE")
-	if err != nil {
-		println(err.Error())
-		return err
-	}
-
 	account.Balances = balances
-	account.OrderHistory = orderHistory
 
 	return nil
 }

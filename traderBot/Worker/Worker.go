@@ -3,11 +3,11 @@ package Worker
 import (
 	"../../traderInfo"
 	"../Analyze"
-	"strconv"
-	"sync"
-	"io"
 	"crypto/rand"
 	"fmt"
+	"io"
+	"strconv"
+	"sync"
 )
 
 var PoolWorker = make(map[string]*Worker)
@@ -40,17 +40,19 @@ func (worker *Worker) Run(fee float64) bool {
 }
 
 type Alt struct {
-	AltName  string  `json:"alt_name"`
-	Balance  float64 `json:"balance"`
-	BuyPrice float64 `json:"buy_price"` // цена за которую купил эту пачку
+	AltName         string  `json:"alt_name"`
+	Balance         float64 `json:"balance"`
+	BuyPrice        float64 `json:"buy_price"`         // цена за которую купил эту пачку
+	ProfitPrice     float64 `json:"profit_price"`      // мин цена продажи что бы выйти в 0
+	GrowProfitPrice float64 `json:"grow_profit_price"` // нарастающий профит
 }
 
-func (worker *Worker) AddAlt(altName string, balance, buyPrice float64) {
+func (worker *Worker) AddAlt(altName string, balance, buyPrice, profitPrice float64) {
 
 	worker.mx.Lock()
 	defer worker.mx.Unlock()
 
-	alt := &Alt{AltName: altName, Balance: balance, BuyPrice: buyPrice}
+	alt := &Alt{AltName: altName, Balance: balance, BuyPrice: buyPrice, ProfitPrice: profitPrice}
 	// немного ебаный ключь мапы ¯\_(ツ)_/¯
 	worker.AltBalances[altName+":"+strconv.FormatFloat(balance, 'f', 6, 64)+":"+strconv.FormatFloat(buyPrice, 'f', 6, 64)] = alt
 }
@@ -64,7 +66,7 @@ func (worker *Worker) RemoveAlt(alt *Alt) {
 	delete(worker.AltBalances, key)
 }
 
-func newUUID() (string) {
+func newUUID() string {
 	uuid := make([]byte, 16)
 	n, err := io.ReadFull(rand.Reader, uuid)
 	if n != len(uuid) || err != nil {

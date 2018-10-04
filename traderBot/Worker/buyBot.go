@@ -2,6 +2,7 @@ package Worker
 
 import (
 	"../../traderInfo"
+	"fmt"
 	"github.com/shopspring/decimal"
 	"strings"
 )
@@ -13,6 +14,7 @@ func (worker *Worker) TradeBuyBot() {
 	uuidBuyOrder := ""
 	var buyRate float64
 	var buyQuantityAlt float64
+	var profitPrice float64
 
 	for {
 
@@ -56,6 +58,7 @@ func (worker *Worker) TradeBuyBot() {
 							worker.BuyActiveMarket = market
 							buyRate = priceByu
 							buyQuantityAlt = quantity
+							profitPrice = worker.AvailableBTCCash / quantity
 
 							break
 						}
@@ -85,7 +88,7 @@ func (worker *Worker) TradeBuyBot() {
 							if err != nil {
 							} else {
 
-								firstRate, okRate :=  first.Rate.Float64()
+								firstRate, okRate := first.Rate.Float64()
 								buy, _ := worker.InTradeStrategy.Analyze(worker.BuyActiveMarket)
 
 								if okRate && firstRate > buyRate && buy {
@@ -99,6 +102,7 @@ func (worker *Worker) TradeBuyBot() {
 										worker.BuyActiveMarket = nil
 										buyRate = 0
 										buyQuantityAlt = 0
+										profitPrice = 0
 									}
 								}
 							}
@@ -108,23 +112,28 @@ func (worker *Worker) TradeBuyBot() {
 							buyAltCount := buyQuantityAlt - orderQuantity
 							buyQuantityAlt -= buyAltCount
 
-							worker.AddAlt(strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], buyAltCount, buyRate)
+							worker.AddAlt(strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], buyAltCount, buyRate, profitPrice)
 							worker.AvailableBTCCash -= buyAltCount * buyRate
 							worker.SellActiveMarkets[worker.BuyActiveMarket.CurrencyPair] = worker.BuyActiveMarket
+
+							fmt.Print("Купил ", buyAltCount, strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], " по ", buyRate)
 						}
 					}
 				}
 
 				if !findOrder {
 					// выкупили полностью
-					worker.AddAlt(strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], buyQuantityAlt, buyRate)
+					worker.AddAlt(strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], buyQuantityAlt, buyRate, profitPrice)
 					worker.AvailableBTCCash -= buyQuantityAlt * buyRate
 					worker.SellActiveMarkets[worker.BuyActiveMarket.CurrencyPair] = worker.BuyActiveMarket
+
+					fmt.Print("Купил ", buyQuantityAlt, strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], " по ", buyRate)
 
 					uuidBuyOrder = ""
 					worker.BuyActiveMarket = nil
 					buyRate = 0
 					buyQuantityAlt = 0
+					profitPrice = 0
 				}
 			}
 		}

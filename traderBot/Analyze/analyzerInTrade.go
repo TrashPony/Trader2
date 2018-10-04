@@ -45,9 +45,9 @@ func (analyze *AnalyzerInTrade) Analyze(market *traderInfo.Market) (buy bool, fa
 	Last, _ := market.MarketSummary.Last.Float64()
 
 	avgLowHigh := (Low + High) / 2
-	differenceAskBind := percentageCalculator(Bid, Ask)
-	demand := percentageCalculator(float64(market.MarketSummary.OpenSellOrders), float64(market.MarketSummary.OpenBuyOrders))
-	second := percentageCalculator(FirstOrderBuy, SecondOrderBuy)
+	differenceAskBind := PercentageCalculator(Bid, Ask)
+	demand := PercentageCalculator(float64(market.MarketSummary.OpenSellOrders), float64(market.MarketSummary.OpenBuyOrders))
+	second := PercentageCalculator(FirstOrderBuy, SecondOrderBuy)
 
 	// boolean sumCap = market.summ25QuantityOrderBidsBook > (market.summ25QuantityOrderAsksBook * 1.5);
 	// boolean historyProf = readHistoryMarket(market, params, log);
@@ -60,7 +60,7 @@ func (analyze *AnalyzerInTrade) Analyze(market *traderInfo.Market) (buy bool, fa
 	return secondCheck && differenceAskBindCheck && openOrdersCheck && lastPriceCheck, false
 }
 
-func percentageCalculator(a, b float64) (result float64) {
+func PercentageCalculator(a, b float64) (result float64) {
 	result = 100 - (a * 100 / b)
 	return result
 }

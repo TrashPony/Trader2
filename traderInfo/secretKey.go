@@ -3,8 +3,8 @@ package traderInfo
 import "github.com/toorop/go-bittrex"
 
 const (
-	API_KEY    = ""
-	API_SECRET = ""
+	API_KEY    = "1"
+	API_SECRET = "1"
 )
 
 var bittrexConnect *bittrex.Bittrex
