@@ -1,4 +1,4 @@
-var ws;
+let ws;
 
 function Connect() {
     ws = new WebSocket("ws://" + window.location.host + "/ws");
@@ -9,8 +9,7 @@ function Connect() {
     };
 
     ws.onmessage = function(msg) {
-        console.log(msg);
-        NewChatMessage(msg.data);
+        UpdateStatus(msg.data);
     };
 
     ws.onerror = function(msg) {
@@ -22,23 +21,6 @@ function Connect() {
     };
 }
 
-function Message() {
-    var chatInput = document.getElementById("chatInput");
-    var text = chatInput.value;
-    if (text !== "") {
-        chatInput.value = null;
-
-        ws.send(JSON.stringify({
-            event: "NewMessage",
-            message: text
-        }));
-    }
-}
-
-function NewChatMessage(jsonMessage) {
-    var event = JSON.parse(jsonMessage).event;
-
-    if (event === "NewMessage") {
-
-    }
+function UpdateStatus(jsonMessage) {
+    console.log(jsonMessage)
 }

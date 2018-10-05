@@ -18,9 +18,10 @@ func (worker *Worker) TradeSellBot() {
 
 			market := traderInfo.GetMarket("BTC-" + altBalances.AltName)
 
-			sell, fast, newProfit := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
+			sell, fast, newProfit, asc := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
 
 			altBalances.GrowProfitPrice = newProfit
+			altBalances.TopAsc = asc
 
 			if sell {
 
@@ -70,8 +71,9 @@ func (worker *Worker) TradeSellBot() {
 							} else {
 
 								firstRate, okRate := first.Rate.Float64()
-								sell, _, newProfit := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
+								sell, _, newProfit, asc := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
 								altBalances.GrowProfitPrice = newProfit
+								altBalances.TopAsc = asc
 
 								if okRate && firstRate < sellRate && sell {
 									// если у первого заказа цена выше чем у наc

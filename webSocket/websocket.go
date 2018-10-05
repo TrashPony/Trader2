@@ -4,13 +4,12 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
-	"sync"
+	"../traderBot/Worker"
+	"../traderInfo"
+	"time"
 )
 
-var mutex = &sync.Mutex{}
-
 var usersWs = make(map[*websocket.Conn]*Clients)
-var wsPipe = make(chan chatResponse)
 
 var upgrader = websocket.Upgrader{}
 
@@ -18,17 +17,10 @@ type Clients struct {
 	Id int
 }
 
-type chatMessage struct {
-	Event    string `json:"event"`
-	UserName string `json:"user_name"`
-	Message  string `json:"message"`
-}
-
-type chatResponse struct {
-	Event    string `json:"event"`
-	UserName string `json:"user_name"`
-	GameUser string `json:"game_user"`
-	Message  string `json:"message"`
+type Status struct {
+	Event   string `json:"event"`
+	Workers map[string]*Worker.Worker
+	Account *traderInfo.Account
 }
 
 func HandleConnections(w http.ResponseWriter, r *http.Request) {
@@ -41,31 +33,13 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddNewUser(ws *websocket.Conn) {
-	usersWs[ws] = &Clients{Id: 1}
-	defer ws.Close()
-
-	Reader(ws)
-}
-
-func Reader(ws *websocket.Conn) {
-	for {
-		var msg chatMessage
-		err := ws.ReadJSON(&msg)
-		if err != nil {
-			delete(usersWs, ws)
-			break
-		}
-		if msg.Event == "NewMessage" {
-			var resp = chatResponse{Event: msg.Event, Message: msg.Message}
-			wsPipe <- resp
-		}
-	}
+	usersWs[ws] = &Clients{}
 }
 
 func Sender() {
 	for {
-		resp := <-wsPipe
-		mutex.Lock()
+		resp := Status{Event: "UpdateStatus", Workers: Worker.GetPoolWolker()}
+
 		for ws := range usersWs {
 			err := ws.WriteJSON(resp)
 			if err != nil {
@@ -74,6 +48,7 @@ func Sender() {
 				delete(usersWs, ws)
 			}
 		}
-		mutex.Unlock()
+
+		time.Sleep(time.Millisecond * 300)
 	}
 }

@@ -18,7 +18,7 @@ func main() {
 
 		router := mux.NewRouter()
 		router.HandleFunc("/ws", webSocket.HandleConnections)
-		router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/")))
+		router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 
 		go webSocket.Sender()
 

@@ -13,14 +13,14 @@ import (
 var PoolWorker = make(map[string]*Worker)
 
 type Worker struct {
-	InTradeStrategy   *Analyze.AnalyzerInTrade      `json:"in_trade_strategy"`
-	OutTradeStrategy  *Analyze.AnalyzerOutTrade     `json:"out_trade_strategy"`
-	StartBTCCash      float64                       `json:"start_btc_cash"`
-	AvailableBTCCash  float64                       `json:"available__btc_cash"`
-	BuyActiveMarket   *traderInfo.Market            `json:"active_markets"`
-	AltBalances       map[string]*Alt               `json:"alt_balances"`
-	Fee               float64                       `json:"fee"`
-	mx                sync.Mutex
+	InTradeStrategy  *Analyze.AnalyzerInTrade  `json:"in_trade_strategy"`
+	OutTradeStrategy *Analyze.AnalyzerOutTrade `json:"out_trade_strategy"`
+	StartBTCCash     float64                   `json:"start_btc_cash"`
+	AvailableBTCCash float64                   `json:"available__btc_cash"`
+	BuyActiveMarket  *traderInfo.Market        `json:"active_markets"`
+	AltBalances      map[string]*Alt           `json:"alt_balances"`
+	Fee              float64                   `json:"fee"`
+	mx               sync.Mutex
 }
 
 func (worker *Worker) Run(fee float64) bool {
@@ -46,6 +46,7 @@ type Alt struct {
 	BuyPrice        float64 `json:"buy_price"`         // цена за которую купил эту пачку
 	ProfitPrice     float64 `json:"profit_price"`      // мин цена продажи что бы выйти в 0
 	GrowProfitPrice float64 `json:"grow_profit_price"` // нарастающий профит
+	TopAsc          float64 `json:"top_asc"`
 }
 
 func (worker *Worker) AddAlt(altName string, balance, buyPrice, profitPrice float64) {
@@ -76,4 +77,8 @@ func newUUID() string {
 	uuid[8] = uuid[8]&^0xc0 | 0x80
 	uuid[6] = uuid[6]&^0xf0 | 0x40
 	return fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:])
+}
+
+func GetPoolWolker() map[string]*Worker {
+	return PoolWorker
 }
