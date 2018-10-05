@@ -16,7 +16,7 @@ function CreateTradeBuyStatus(id) {
     tradeBuyStatus.className = "TradeBuyStatus";
 
     let spanHead = document.createElement("span");
-    spanHead.innerHTML = "Buy";
+    spanHead.innerHTML = "Buy status";
     spanHead.className = "header";
     spanHead.style.marginTop = "5px";
     spanHead.style.display = "block";
@@ -24,6 +24,7 @@ function CreateTradeBuyStatus(id) {
     tradeBuyStatus.appendChild(spanHead);
 
     let statusBlock = document.createElement("div");
+    statusBlock.className = "statusBuyBlock";
     statusBlock.id = "BuyStatus" + id;
     tradeBuyStatus.appendChild(statusBlock);
 
@@ -36,7 +37,7 @@ function CreateTradeSellStatus(id) {
     tradeSellStatus.id = "TradeSellStatus" + id;
 
     let spanHead = document.createElement("span");
-    spanHead.innerHTML = "Sell";
+    spanHead.innerHTML = "Sell status";
     spanHead.className = "header";
     spanHead.style.marginTop = "5px";
     spanHead.style.display = "block";

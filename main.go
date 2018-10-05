@@ -22,8 +22,8 @@ func main() {
 
 	go webSocket.Sender()
 
-	log.Println("http server started on :8081")
-	err := http.ListenAndServe(":8081", router)
+	log.Println("http server started on :8080")
+	err := http.ListenAndServe(":8080", router)
 	if err != nil {
 		log.Panic(err)
 	}
