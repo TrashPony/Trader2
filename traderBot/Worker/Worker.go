@@ -24,9 +24,11 @@ type Worker struct {
 }
 
 func (worker *Worker) Run(fee float64) bool {
-	if worker.AvailableBTCCash >= 0.0005 && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
+	if worker.StartBTCCash >= 0.0005 && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
+		// TODO мониторить кто на каком рынке пытается купить валюту, что бы не мешать друг другу
 
 		worker.Fee = fee
+		worker.AvailableBTCCash = worker.StartBTCCash
 
 		go worker.TradeBuyBot()
 		go worker.TradeSellBot()

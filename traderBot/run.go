@@ -2,6 +2,8 @@ package traderBot
 
 import (
 	"../traderInfo"
+	"./Worker"
+	"./Analyze"
 )
 
 const FEE = 0.0026 // в процентах 0.26, и сделано множителем тоесть поделено на 100
@@ -32,6 +34,14 @@ func Run(account *traderInfo.Account) {
 	}
 
 	if account.StartBTC > 0.0005 {
-		// todo создавать ботов и запускать их
+		// пока только 1 бот и у него нет денег :)
+
+		baseInAlgorithm := &Analyze.AnalyzerInTrade{Name: "BaseInAlgorithm"}
+		baseOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "BaseOutAlgorithm"}
+
+		newWorker := &Worker.Worker{StartBTCCash: account.StartBTC, InTradeStrategy: baseInAlgorithm, OutTradeStrategy: baseOutAlgorithm}
+		newWorker.Run(FEE)
+	} else {
+		println("Ты бомж :(")
 	}
 }

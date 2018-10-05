@@ -10,7 +10,14 @@ type AnalyzerOutTrade struct {
 }
 
 func (analyze *AnalyzerOutTrade) Analyze(market *traderInfo.Market, startProfit, GrowProfitPrice float64) (Sell bool, fast bool, newProfit float64) {
+	if analyze.Name == "BaseOutAlgorithm" {
+		return BaseOutAlgorithm(market, startProfit, GrowProfitPrice)
+	}
 
+	return false, false, GrowProfitPrice
+}
+
+func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice float64) (Sell bool, fast bool, newProfit float64) {
 	Ask, _ := market.MarketSummary.Ask.Float64()
 
 	if Ask > GrowProfitPrice {

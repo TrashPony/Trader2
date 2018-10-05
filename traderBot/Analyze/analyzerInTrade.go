@@ -36,6 +36,14 @@ type AnalyzerInTrade struct {
 
 func (analyze *AnalyzerInTrade) Analyze(market *traderInfo.Market) (buy bool, fast bool) {
 
+	if analyze.Name == "BaseInAlgorithm" {
+		return BaseInAlgorithm(market)
+	}
+
+	return false, false
+}
+
+func BaseInAlgorithm(market *traderInfo.Market) (buy bool, fast bool) {
 	Bid, _ := market.MarketSummary.Bid.Float64()
 	Ask, _ := market.MarketSummary.Ask.Float64()
 	Low, _ := market.MarketSummary.Low.Float64()
@@ -58,9 +66,4 @@ func (analyze *AnalyzerInTrade) Analyze(market *traderInfo.Market) (buy bool, fa
 	secondCheck := second < 0.10                       // Второй оредар на покупку
 
 	return secondCheck && differenceAskBindCheck && openOrdersCheck && lastPriceCheck, false
-}
-
-func PercentageCalculator(a, b float64) (result float64) {
-	result = 100 - (a * 100 / b)
-	return result
 }
