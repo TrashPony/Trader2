@@ -19,6 +19,7 @@ function Update(id, bot) {
     UpdateIcon(id, bot);
     UpdateCashTable(id, bot);
     UpdateAltTable(id, bot);
+    UpdateLog(id, bot);
 }
 
 function UpdateHeaderInfo(id, bot) {
@@ -71,8 +72,24 @@ function UpdateAltTable(id, bot) {
 }
 
 function UpdateLog(id, bot) {
+    let logBlock = document.getElementById("log" + id);
 
     for (let i = 0; i < bot.log.length; i++) {
+        let logRow = document.getElementById("log" + id + ":" + i);
 
+        if (!logRow) {
+            console.log(bot.log[i].time);
+            let time = document.createElement("span");
+            time.className = "timeLog";
+            time.innerHTML = bot.log[i].time.split("T")[0] + " - " + bot.log[i].time.substring(11, 19) + " "; // лень думать
+
+            logRow = document.createElement("span");
+            logRow.className = "textLog";
+            logRow.innerHTML = bot.log[i].log;
+            logRow.id = "log" + id + ":" + i;
+
+            logBlock.appendChild(time);
+            logBlock.appendChild(logRow);
+        }
     }
 }

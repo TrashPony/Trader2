@@ -8,6 +8,7 @@ import (
 	"io"
 	"strconv"
 	"sync"
+	"time"
 )
 
 var PoolWorker = make(map[string]*Worker)
@@ -19,7 +20,7 @@ type Worker struct {
 	AvailableBTCCash float64                   `json:"available__btc_cash"`
 	BuyActiveMarket  *traderInfo.Market        `json:"active_markets"`
 	AltBalances      map[string]*Alt           `json:"alt_balances"`
-	Log              []string                  `json:"log"`
+	Log              []LogWorker               `json:"log"`
 	Fee              float64                   `json:"fee"`
 	mx               sync.Mutex
 }
@@ -31,10 +32,12 @@ func (worker *Worker) Run(fee float64) bool {
 	worker.Fee = fee
 	worker.AvailableBTCCash = worker.StartBTCCash
 	worker.AltBalances = make(map[string]*Alt)
-	worker.Log = make([]string, 0)
+	worker.Log = make([]LogWorker, 0)
 
 	go worker.TradeBuyBot()
 	go worker.TradeSellBot()
+
+	worker.AddLog("я родился :)")
 
 	PoolWorker[newUUID()] = worker
 	return true
@@ -69,6 +72,17 @@ func (worker *Worker) RemoveAlt(alt *Alt) {
 
 	key := alt.AltName + ":" + strconv.FormatFloat(alt.Balance, 'f', 6, 64) + ":" + strconv.FormatFloat(alt.BuyPrice, 'f', 6, 64)
 	delete(worker.AltBalances, key)
+}
+
+func (worker *Worker) AddLog(log string) {
+	logWorker := LogWorker{Time: time.Now(), Log: log}
+
+	worker.Log = append(worker.Log, logWorker)
+}
+
+type LogWorker struct {
+	Time time.Time `json:"time"`
+	Log  string    `json:"log"`
 }
 
 func newUUID() string {

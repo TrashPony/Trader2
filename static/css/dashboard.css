@@ -140,3 +140,15 @@
     font-family: sans-serif;
     font-size: 9pt;
 }
+
+.timeLog {
+    font-size: 9px;
+    color: #b3ddff;
+    text-shadow: #28a5e4 0 0 4px;
+}
+
+.textLog {
+    font-size: 10px;
+    color: #fff91e;
+    text-shadow: #28a5e4 0 0 4px;
+}
