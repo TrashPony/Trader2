@@ -1,18 +1,18 @@
-#main {
+#backGround {
     margin: 0 auto;
-    height: 385px;
+    height: 480px;
     width: 1400px;
     border-radius: 10px;
     border: 1px solid #25a0e1;
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
     background-size: 100% 2px, 4px 4px, cover;
     animation: menuAnimation 3000ms linear infinite;
 }
 
 .bots, .botIcon {
-    height: 335px;
+    height: 435px;
     width: 400px;
-    box-shadow: 5px 5px 5px rgba(0,0,0,.2);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
     border: 1px solid #25a0e1;
     border-radius: 10px;
     float: left;
@@ -23,8 +23,9 @@
     height: 100px;
     width: 100px;
     margin: 10px 12px;
+    margin-top: 15px;
     float: left;
-    background: url("../img/BaseInAlgorithm.jpg") no-repeat;
+    background: no-repeat;
     background-size: 100%;
 }
 
@@ -35,13 +36,17 @@
 }
 
 .cashTable {
-    width: 270px;
+    width: 260px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    margin-top: 15px;
 }
 
 .option, .Value {
     width: 100px;
     font-size: 12px;
-    color:  #a5d5ef;
+    color: #a5d5ef;
     text-shadow: #28a5e4 0 0 4px;
     text-align: left;
 }
@@ -57,25 +62,81 @@
     width: 400px;
 }
 
-.TradeSellStatus, .TradeBuyStatus {
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+.TradeSellStatus, .TradeBuyStatus, .log {
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
     border: 1px solid #25a0e1;
     border-radius: 10px;
-    height: 180px;
-    width: 180px;
-    float: left;
-    margin: 0 5px;
+    width: 380px;
+    margin-bottom: 10px;
+}
+
+.TradeBuyStatus {
+    height: 50px;
+    overflow-y: scroll;
+}
+
+.TradeSellStatus {
+    height: 110px;
+    overflow-y: scroll;
 }
 
 .headerTable {
-    margin: 5px auto;
-    width: 270px;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 260px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
 }
+
 .headerTable td:first-child {
     width: 100px;
     text-align: left;
 }
 
 .altCash {
+    width: 355px;
     margin-left: 5px;
+    border: 1px solid #25a0e1;
+}
+
+.altCash tr {
+    vertical-align: top;
+    text-align: center;
+    height: 10px;
+}
+
+.altCash td {
+    border-left: 1px solid #25a0e1;
+    border-right: 1px solid #25a0e1;
+    font-size: 11px;
+    text-align: center;
+}
+
+.altCash tr td:first-child {
+    border-left: none;
+}
+
+.altCash tr td:last-child {
+    border-right: none;
+}
+
+.altCash tr:first-child td {
+    border-bottom: 1px solid #25a0e1;
+}
+
+.log {
+    height: 73px;
+    width: 358px;
+    margin: -10px 0 7px 7px;
+    padding: 10px;
+    word-wrap: break-word;
+    overflow-y: scroll;
+    border-radius: 10px;
+    text-align: left;
+    background: rgba(183, 195, 201, 0.29);
+    border: 2px solid #25a0e1;
+    text-shadow: #28a5e4 0 0 4px;
+    font-family: sans-serif;
+    font-size: 9pt;
 }

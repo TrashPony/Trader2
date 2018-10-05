@@ -53,7 +53,7 @@ func BaseInAlgorithm(market *traderInfo.Market) (buy bool, fast bool) {
 	Last, _ := market.MarketSummary.Last.Float64()
 
 	avgLowHigh := (Low + High) / 2
-	differenceAskBind := PercentageCalculator(Bid, Ask)
+	differenceAskBind := PercentageCalculator(Bid+0.00000001, Ask-0.00000001)
 	demand := PercentageCalculator(float64(market.MarketSummary.OpenSellOrders), float64(market.MarketSummary.OpenBuyOrders))
 	second := PercentageCalculator(FirstOrderBuy, SecondOrderBuy)
 

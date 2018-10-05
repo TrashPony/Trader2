@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"github.com/shopspring/decimal"
 	"strings"
+	"time"
 )
 
 func (worker *Worker) TradeBuyBot() {
-
-	markets := traderInfo.GetAllMarket()
 
 	uuidBuyOrder := ""
 	var buyRate float64
@@ -17,8 +16,9 @@ func (worker *Worker) TradeBuyBot() {
 	var profitPrice float64
 
 	for {
+		if worker.AvailableBTCCash >= 0 { //.0005 {
 
-		if worker.AvailableBTCCash >= 0.0005 {
+			markets := traderInfo.GetAllMarket()
 
 			var err error
 
@@ -27,6 +27,10 @@ func (worker *Worker) TradeBuyBot() {
 				for _, marketName := range markets {
 
 					market := traderInfo.GetMarket(marketName.MarketName)
+
+					if market == nil {
+						continue
+					}
 
 					volume, ok := market.MarketSummary.Volume.Float64()
 					buy, fast := worker.InTradeStrategy.Analyze(market)
@@ -135,5 +139,6 @@ func (worker *Worker) TradeBuyBot() {
 				}
 			}
 		}
+		time.Sleep(1 * time.Second) // без этих слипов система виснет
 	}
 }

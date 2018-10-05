@@ -19,25 +19,28 @@ type Worker struct {
 	AvailableBTCCash float64                   `json:"available__btc_cash"`
 	BuyActiveMarket  *traderInfo.Market        `json:"active_markets"`
 	AltBalances      map[string]*Alt           `json:"alt_balances"`
+	Log              []string                  `json:"log"`
 	Fee              float64                   `json:"fee"`
 	mx               sync.Mutex
 }
 
 func (worker *Worker) Run(fee float64) bool {
-	if worker.StartBTCCash >= 0.0005 && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
-		// TODO мониторить кто на каком рынке пытается купить валюту, что бы не мешать друг другу
+	//if worker.StartBTCCash >= 0.0005 && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
+	// TODO мониторить кто на каком рынке пытается купить валюту, что бы не мешать друг другу
 
-		worker.Fee = fee
-		worker.AvailableBTCCash = worker.StartBTCCash
+	worker.Fee = fee
+	worker.AvailableBTCCash = worker.StartBTCCash
+	worker.AltBalances = make(map[string]*Alt)
+	worker.Log = make([]string, 0)
 
-		go worker.TradeBuyBot()
-		go worker.TradeSellBot()
+	go worker.TradeBuyBot()
+	go worker.TradeSellBot()
 
-		PoolWorker[newUUID()] = worker
-		return true
-	} else {
-		return false
-	}
+	PoolWorker[newUUID()] = worker
+	return true
+	//} else {
+	//	return false
+	//}
 }
 
 type Alt struct {
@@ -79,6 +82,6 @@ func newUUID() string {
 	return fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:])
 }
 
-func GetPoolWolker() map[string]*Worker {
+func GetPoolWorker() map[string]*Worker {
 	return PoolWorker
 }

@@ -1,10 +1,11 @@
 package Worker
 
 import (
-	"../Analyze"
 	"../../traderInfo"
+	"../Analyze"
 	"fmt"
 	"github.com/shopspring/decimal"
+	"time"
 )
 
 func (worker *Worker) TradeSellBot() {
@@ -17,6 +18,10 @@ func (worker *Worker) TradeSellBot() {
 			var err error
 
 			market := traderInfo.GetMarket("BTC-" + altBalances.AltName)
+
+			if market == nil {
+				continue
+			}
 
 			sell, fast, newProfit, asc := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
 
@@ -110,5 +115,6 @@ func (worker *Worker) TradeSellBot() {
 				}
 			}
 		}
+		time.Sleep(1 * time.Second) // без этих слипов система виснет
 	}
 }

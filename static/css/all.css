@@ -111,3 +111,34 @@ input:hover {
 .moveWindow:hover {
     color: #00fffd;
 }
+
+/* CUSTOM SCROLLBAR */
+body ::-webkit-scrollbar,
+body ::-webkit-scrollbar:horizontal {
+    width: 12px;
+}
+
+body ::-webkit-scrollbar {
+    border-radius: 10px;
+    background: #a5d5ef;
+    border: 1px solid #25a0e1;
+
+}
+
+/* DISABLED STATES */
+body ::-webkit-scrollbar:disabled {
+    border-radius: 10px;
+    background: #a5d5ef;
+}
+
+/* HANDLE */
+body ::-webkit-scrollbar-thumb,
+body ::-webkit-scrollbar-thumb:window-inactive,
+body ::-webkit-scrollbar-thumb:disabled {
+    border-radius: 10px;
+    border: 1px solid #25a0e1;
+    background-size: 100% 2px, 4px 4px, cover;
+    animation: menuAnimation 3000ms linear infinite;
+}
+
+/*--------*/

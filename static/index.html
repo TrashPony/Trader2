@@ -3,232 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
     <script src="./js/ws.js"></script>
+
+    <script src="./js/UpdateBotStatus/UpdateBotStatus.js"></script>
+
+    <script src="./js/CreateBotBox/CreateBotBox.js"></script>
+    <script src="./js/CreateBotBox/CreateCashTable.js"></script>
+    <script src="./js/CreateBotBox/CreateHeaderBotTable.js"></script>
+    <script src="./js/CreateBotBox/CreateTradeStatusBlock.js"></script>
+
     <link href="./css/all.css" rel="stylesheet">
     <link href="./css/dashboard.css" rel="stylesheet">
     <link href="./css/menuAnimation.css" rel="stylesheet">
     <script> Connect() </script>
 </head>
 <body>
-<div id="main">
-    <div style="width: 1356px">
-        <div class="bots">
-            <div class="botIcon"></div>
+<div id="backGround">
+    <div id="main" style="margin: 0 auto; width: 1356px">
 
-            <table class="headerTable">
-                <tr>
-                    <td class="header"> Bot_Name</td>
-                    <td class="Failed"> Эффективность</td>
-                    <td class="Failed"> -10%</td>
-                </tr>
-            </table>
-            <table class="cashTable">
-                <tr>
-                    <td class="option"> Start BTC Cash</td>
-                    <td class="Value"> 0.00053761</td>
-                </tr>
-                <tr>
-                    <td class="option"> Available BTC Cash</td>
-                    <td class="Value"> 0.00053761</td>
-                </tr>
-                <tr>
-                    <td class="option"> In Trade Strategy</td>
-                    <td class="Value"> BaseInAlgorithm</td>
-                </tr>
-                <tr>
-                    <td class="option"> Out Trade Strategy</td>
-                    <td class="Value"> BaseOutAlgorithm</td>
-                </tr>
-            </table>
-
-            <div style="clear: both;"></div>
-
-            <div class="TradeStatus">
-                <div class="TradeBuyStatus">
-                    <span class="header" style="margin-top: 5px; display: block;">Buy</span>
-                    <div>
-                        <span class="Value"> Пытаюсь купить BTC </span>
-                    </div>
-                </div>
-
-                <div class="TradeSellStatus">
-                    <span class="header" style="margin-top: 5px; display: block;">Sell</span>
-                    <div>
-                        <span class="Value">Alt Cash:</span>
-                        <table class="altCash">
-                            <tr>
-                                <td class="option"> Name</td>
-                                <td class="Value"> MUSIC</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> Balance</td>
-                                <td class="Value"> 442</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> BuyPrice</td>
-                                <td class="Value"> 0.00000061</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> ProfitPrice</td>
-                                <td class="Value"> 0.00000063</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> GrowProfitPrice</td>
-                                <td class="Value"> 0.00000065</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> TopAscOrder</td>
-                                <td class="Value"> 0.00000065</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bots">
-            <div class="botIcon"></div>
-            <table class="headerTable">
-                <tr>
-                    <td class="header"> Bot_Name</td>
-                    <td class="Failed"> Эффективность</td>
-                    <td class="Failed"> -10%</td>
-                </tr>
-            </table>
-            <table class="cashTable">
-                <tr>
-                    <td class="option"> Start BTC Cash</td>
-                    <td class="Value"> 0.00053761</td>
-                </tr>
-                <tr>
-                    <td class="option"> Available BTC Cash</td>
-                    <td class="Value"> 0.00053761</td>
-                </tr>
-                <tr>
-                    <td class="option"> In Trade Strategy</td>
-                    <td class="Value"> BaseInAlgorithm</td>
-                </tr>
-                <tr>
-                    <td class="option"> Out Trade Strategy</td>
-                    <td class="Value"> BaseOutAlgorithm</td>
-                </tr>
-            </table>
-
-            <div style="clear: both;"></div>
-
-            <div class="TradeStatus">
-                <div class="TradeBuyStatus">
-                    <span class="header" style="margin-top: 5px; display: block;">Buy</span>
-                    <div>
-                        <span class="Value"> Пытаюсь купить BTC </span>
-                    </div>
-                </div>
-
-                <div class="TradeSellStatus">
-                    <span class="header" style="margin-top: 5px; display: block;">Sell</span>
-                    <div>
-                        <span class="Value">Alt Cash:</span>
-                        <table class="altCash">
-                            <tr>
-                                <td class="option"> Name</td>
-                                <td class="Value"> MUSIC</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> Balance</td>
-                                <td class="Value"> 442</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> BuyPrice</td>
-                                <td class="Value"> 0.00000061</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> ProfitPrice</td>
-                                <td class="Value"> 0.00000063</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> GrowProfitPrice</td>
-                                <td class="Value"> 0.00000065</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> TopAscOrder</td>
-                                <td class="Value"> 0.00000065</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bots">
-            <div class="botIcon"></div>
-            <table class="headerTable">
-                <tr>
-                    <td class="header"> Bot_Name</td>
-                    <td class="Failed"> Эффективность</td>
-                    <td class="Failed"> -10%</td>
-                </tr>
-            </table>
-            <table class="cashTable">
-                <tr>
-                    <td class="option"> Start BTC Cash</td>
-                    <td class="Value"> 0.00053761</td>
-                </tr>
-                <tr>
-                    <td class="option"> Available BTC Cash</td>
-                    <td class="Value"> 0.00053761</td>
-                </tr>
-                <tr>
-                    <td class="option"> In Trade Strategy</td>
-                    <td class="Value"> BaseInAlgorithm</td>
-                </tr>
-                <tr>
-                    <td class="option"> Out Trade Strategy</td>
-                    <td class="Value"> BaseOutAlgorithm</td>
-                </tr>
-            </table>
-
-            <div style="clear: both;"></div>
-
-            <div class="TradeStatus">
-                <div class="TradeBuyStatus">
-                    <span class="header" style="margin-top: 5px; display: block;">Buy</span>
-                    <div>
-                        <span class="Value"> Пытаюсь купить BTC </span>
-                    </div>
-                </div>
-
-                <div class="TradeSellStatus">
-                    <span class="header" style="margin-top: 5px; display: block;">Sell</span>
-                    <div>
-                        <span class="Value">Alt Cash:</span>
-                        <table class="altCash">
-                            <tr>
-                                <td class="option"> Name</td>
-                                <td class="Value"> MUSIC</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> Balance</td>
-                                <td class="Value"> 442</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> BuyPrice</td>
-                                <td class="Value"> 0.00000061</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> ProfitPrice</td>
-                                <td class="Value"> 0.00000063</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> GrowProfitPrice</td>
-                                <td class="Value"> 0.00000065</td>
-                            </tr>
-                            <tr>
-                                <td class="option"> TopAscOrder</td>
-                                <td class="Value"> 0.00000065</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 </body>
