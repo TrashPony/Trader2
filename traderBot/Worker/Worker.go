@@ -18,7 +18,6 @@ type Worker struct {
 	StartBTCCash      float64                       `json:"start_btc_cash"`
 	AvailableBTCCash  float64                       `json:"available__btc_cash"`
 	BuyActiveMarket   *traderInfo.Market            `json:"active_markets"`
-	SellActiveMarkets map[string]*traderInfo.Market `json:"sell_active_markets"`
 	AltBalances       map[string]*Alt               `json:"alt_balances"`
 	Fee               float64                       `json:"fee"`
 	mx                sync.Mutex

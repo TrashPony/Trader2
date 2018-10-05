@@ -114,7 +114,6 @@ func (worker *Worker) TradeBuyBot() {
 
 							worker.AddAlt(strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], buyAltCount, buyRate, profitPrice)
 							worker.AvailableBTCCash -= buyAltCount * buyRate
-							worker.SellActiveMarkets[worker.BuyActiveMarket.CurrencyPair] = worker.BuyActiveMarket
 
 							fmt.Print("Купил ", buyAltCount, strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], " по ", buyRate)
 						}
@@ -125,7 +124,6 @@ func (worker *Worker) TradeBuyBot() {
 					// выкупили полностью
 					worker.AddAlt(strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], buyQuantityAlt, buyRate, profitPrice)
 					worker.AvailableBTCCash -= buyQuantityAlt * buyRate
-					worker.SellActiveMarkets[worker.BuyActiveMarket.CurrencyPair] = worker.BuyActiveMarket
 
 					fmt.Print("Купил ", buyQuantityAlt, strings.Split(worker.BuyActiveMarket.CurrencyPair, "-")[1], " по ", buyRate)
 
