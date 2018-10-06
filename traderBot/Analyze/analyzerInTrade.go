@@ -47,8 +47,9 @@ func (analyze *AnalyzerInTrade) Analyze(market *traderInfo.Market) (buy bool, fa
 }
 
 func BaseInAlgorithm(market *traderInfo.Market) (buy bool, fast bool) {
-	Bid, _ := market.MarketSummary.Bid.Float64()
-	Ask, _ := market.MarketSummary.Ask.Float64()
+	// todo неправильно считается комисия
+	//Bid, _ := market.MarketSummary.Bid.Float64()
+	//Ask, _ := market.MarketSummary.Ask.Float64()
 	Low, _ := market.MarketSummary.Low.Float64()
 	High, _ := market.MarketSummary.High.Float64()
 	FirstOrderBuy, _ := market.OrdersBuy[1].Rate.Float64()
@@ -56,17 +57,17 @@ func BaseInAlgorithm(market *traderInfo.Market) (buy bool, fast bool) {
 	Last, _ := market.MarketSummary.Last.Float64()
 
 	avgLowHigh := (Low + High) / 2
-	differenceAskBind := utils.PercentageCalculator(Bid+0.00000001, Ask-0.00000001)
-	demand := utils.PercentageCalculator(float64(market.MarketSummary.OpenSellOrders), float64(market.MarketSummary.OpenBuyOrders))
+	//differenceAskBind := utils.PercentageCalculator(Bid+0.00000001, Ask-0.00000001)
+	//demand := utils.PercentageCalculator(float64(market.MarketSummary.OpenSellOrders), float64(market.MarketSummary.OpenBuyOrders))
 	second := utils.PercentageCalculator(FirstOrderBuy, SecondOrderBuy)
 
 	// boolean sumCap = market.summ25QuantityOrderBidsBook > (market.summ25QuantityOrderAsksBook * 1.5);
 	// boolean historyProf = readHistoryMarket(market, params, log);
 
-	openOrdersCheck := demand > 70                     // спрос предложение
-	lastPriceCheck := Last >= avgLowHigh               // последний ордер ниже средней по суткам
-	differenceAskBindCheck := differenceAskBind > 0.55 // комисия
-	secondCheck := second < 0.10                       // Второй оредар на покупку
+	//openOrdersCheck := demand > 70                     // спрос предложение
+	lastPriceCheck := Last >= avgLowHigh // последний ордер ниже средней по суткам
+	//differenceAskBindCheck := differenceAskBind > 0.55 // комисия
+	secondCheck := second < 0.10 // Второй оредар на покупку
 
-	return secondCheck && differenceAskBindCheck && openOrdersCheck && lastPriceCheck, false
+	return secondCheck && lastPriceCheck, false
 }

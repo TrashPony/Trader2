@@ -35,23 +35,22 @@ func (marketPoll *MarketPool) AddMarket(newMarket *Market) {
 
 func UpdateActualMarketPool() {
 	for {
-		markets, err := GetBittrex().GetMarkets()
+		markets, err := GetBittrex().GetMarketSummaries()
 		if err != nil {
 			println(err.Error())
 		}
 
-		for _, market := range markets {
+		for _, marketSummaries := range markets {
 
-			pair := strings.Split(market.MarketName, "-")
+			pair := strings.Split(marketSummaries.MarketName, "-")
 
-			if pair[0] == "BTC" && market.IsActive {
-
-				newMarket := GetMarket(market.MarketName)
-
-				volume, _ := newMarket.MarketSummary.BaseVolume.Float64()
-
+			if pair[0] == "BTC" {
+				volume, _ := marketSummaries.BaseVolume.Float64()
 				if volume > 20 { // если у валюты капитализация больше 20 биткоинов
-					Markets.AddMarket(newMarket)
+					newMarket := GetMarket(marketSummaries.MarketName)
+					if newMarket != nil && len(newMarket.OrdersBuy) > 0 {
+						Markets.AddMarket(newMarket)
+					}
 				}
 			}
 		}

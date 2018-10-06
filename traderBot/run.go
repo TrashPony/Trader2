@@ -16,9 +16,8 @@ func Run(account *traderInfo.Account) {
 		if !marketBalance.Available.IsZero() && marketBalance.Currency != "BTC" && marketBalance.Currency != "USDT" {
 			availableMarket = append(availableMarket, traderInfo.GetMarket("BTC-"+marketBalance.Currency))
 		} else {
-			var ok bool
-			account.StartBTC, ok = marketBalance.Available.Float64()
-			if ok && marketBalance.Currency == "BTC" {
+			if marketBalance.Currency == "BTC" {
+				account.StartBTC, _ = marketBalance.Available.Float64()
 				print("available BTC: ")
 				println(account.StartBTC)
 			}
@@ -33,17 +32,17 @@ func Run(account *traderInfo.Account) {
 		}
 	}
 
-	//if account.StartBTC > 0.0005 {
+	if account.StartBTC >= 0.00075 {
 
-	go traderInfo.UpdateActualMarketPool() // обновляет список всех маркетов, и обновляется каждые 2 часа
+		go traderInfo.UpdateActualMarketPool() // обновляет список всех маркетов, и обновляется каждые 2 часа
 
-	baseInAlgorithm := &Analyze.AnalyzerInTrade{Name: "BaseInAlgorithm"}
-	baseOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "BaseOutAlgorithm"}
+		baseInAlgorithm := &Analyze.AnalyzerInTrade{Name: "BaseInAlgorithm"}
+		baseOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "BaseOutAlgorithm"}
 
-	newWorker := &Worker.Worker{StartBTCCash: account.StartBTC, InTradeStrategy: baseInAlgorithm, OutTradeStrategy: baseOutAlgorithm}
-	newWorker.Run(FEE)
+		newWorker := &Worker.Worker{StartBTCCash: 0.00075, InTradeStrategy: baseInAlgorithm, OutTradeStrategy: baseOutAlgorithm}
+		newWorker.Run(FEE)
 
-	//} else {
-	//	println("Ты бомж :(")
-	//}
+	} else {
+		println("Ты бомж :(")
+	}
 }

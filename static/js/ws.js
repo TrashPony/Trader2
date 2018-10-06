@@ -2,10 +2,10 @@ let ws;
 
 function Connect() {
     ws = new WebSocket("ws://" + window.location.host + "/ws");
-    console.log("Websocket chat - status: " + ws.readyState);
+    console.log("Websocket - status: " + ws.readyState);
 
     ws.onopen = function () {
-        console.log("Connection chat opened..." + this.readyState);
+        console.log("Connection opened..." + this.readyState);
     };
 
     ws.onmessage = function (msg) {
@@ -13,10 +13,10 @@ function Connect() {
     };
 
     ws.onerror = function (msg) {
-        console.log("Error chat occured sending..." + msg.data);
+        console.log("Error occured sending..." + msg.data);
     };
 
     ws.onclose = function (msg) {
-        console.log("Disconnected chat - status " + this.readyState);
+        alert("Disconnected - status " + this.readyState);
     };
 }

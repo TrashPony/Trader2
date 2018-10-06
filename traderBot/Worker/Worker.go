@@ -1,10 +1,10 @@
 package Worker
 
 import (
-	"../../traderInfo"
 	"../Analyze"
 	"crypto/rand"
 	"fmt"
+	"github.com/toorop/go-bittrex"
 	"io"
 	"strconv"
 	"sync"
@@ -19,7 +19,8 @@ type Worker struct {
 	OutTradeStrategy *Analyze.AnalyzerOutTrade `json:"out_trade_strategy"`
 	StartBTCCash     float64                   `json:"start_btc_cash"`
 	AvailableBTCCash float64                   `json:"available__btc_cash"`
-	BuyActiveMarket  *traderInfo.Market        `json:"active_markets"`
+	BuyActiveMarket  string                    `json:"active_markets"`
+	BuyOrder         *bittrex.Order2           `json:"buy_order"`
 	AltBalances      map[string]*Alt           `json:"alt_balances"`
 	Log              []LogWorker               `json:"log"`
 	Fee              float64                   `json:"fee"`
@@ -27,34 +28,34 @@ type Worker struct {
 }
 
 func (worker *Worker) Run(fee float64) bool {
-	//if worker.StartBTCCash >= 0.0005 && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
-	// TODO мониторить кто на каком рынке пытается купить валюту, что бы не мешать друг другу
+	if worker.StartBTCCash >= 0.00075 && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
 
-	worker.Fee = fee
-	worker.AvailableBTCCash = worker.StartBTCCash
-	worker.AltBalances = make(map[string]*Alt)
-	worker.Log = make([]LogWorker, 0)
+		worker.Fee = fee
+		worker.AvailableBTCCash = worker.StartBTCCash
+		worker.AltBalances = make(map[string]*Alt)
+		worker.Log = make([]LogWorker, 0)
 
-	go worker.TradeBuyBot()
-	go worker.TradeSellBot()
+		go worker.TradeBuyBot()
+		go worker.TradeSellBot()
 
-	worker.ID = newUUID()
-	PoolWorker[worker.ID] = worker
+		worker.ID = newUUID()
+		PoolWorker[worker.ID] = worker
 
-	worker.AddLog("я родился :)")
-	return true
-	//} else {
-	//	return false
-	//}
+		worker.AddLog("я родился :)")
+		return true
+	} else {
+		return false
+	}
 }
 
 type Alt struct {
-	AltName         string  `json:"alt_name"`
-	Balance         float64 `json:"balance"`
-	BuyPrice        float64 `json:"buy_price"`         // цена за которую купил эту пачку
-	ProfitPrice     float64 `json:"profit_price"`      // мин цена продажи что бы выйти в 0
-	GrowProfitPrice float64 `json:"grow_profit_price"` // нарастающий профит
-	TopAsc          float64 `json:"top_asc"`
+	AltName         string          `json:"alt_name"`
+	Balance         float64         `json:"balance"`
+	BuyPrice        float64         `json:"buy_price"`         // цена за которую купил эту пачку
+	ProfitPrice     float64         `json:"profit_price"`      // мин цена продажи что бы выйти в 0
+	GrowProfitPrice float64         `json:"grow_profit_price"` // нарастающий профит
+	TopAsc          float64         `json:"top_asc"`
+	SellOrder       *bittrex.Order2 `json:"sell_order"` // ордер в пачке если он есть
 }
 
 func (worker *Worker) AddAlt(altName string, balance, buyPrice, profitPrice float64) {
@@ -62,7 +63,7 @@ func (worker *Worker) AddAlt(altName string, balance, buyPrice, profitPrice floa
 	worker.mx.Lock()
 	defer worker.mx.Unlock()
 
-	alt := &Alt{AltName: altName, Balance: balance, BuyPrice: buyPrice, ProfitPrice: profitPrice}
+	alt := &Alt{AltName: altName, Balance: balance, BuyPrice: buyPrice, ProfitPrice: profitPrice, GrowProfitPrice: profitPrice}
 	// немного ебаный ключь мапы ¯\_(ツ)_/¯
 	worker.AltBalances[altName+":"+strconv.FormatFloat(balance, 'f', 6, 64)+":"+strconv.FormatFloat(buyPrice, 'f', 6, 64)] = alt
 }

@@ -1,4 +1,5 @@
 function UpdateStatus(jsonMessage) {
+    console.log(jsonMessage);
     let botsData = JSON.parse(jsonMessage);
 
     for (let bot in botsData.Workers) {
@@ -30,6 +31,8 @@ function UpdateHeaderInfo(id, bot) {
     let tdEfficiency = document.getElementById("Efficiency" + id);
     let efficiency = 100 - (bot.start_btc_cash * 100 / bot.available__btc_cash);
     tdEfficiency.innerHTML = efficiency;
+
+    // TODO учитывать альты при расчете эфективности
 
     if (efficiency < 0) {
         tdEfficiency.className = "Failed"
@@ -63,11 +66,39 @@ function UpdateCashTable(id, bot) {
 
 function UpdateAltTable(id, bot) {
 
-    let tradeSellStatus = document.getElementById("TradeSellStatus" + id);
+    let tradeSellStatus = document.getElementById("altCash" + id);
 
     for (let alt in bot.alt_balances) {
         if (bot.alt_balances.hasOwnProperty(alt)) {
-            //TODO заполнение таблицы алтов
+            let trAlt = document.getElementById(alt);
+
+            if (!trAlt) {
+                trAlt = document.createElement("tr");
+                trAlt.id = alt;
+
+                function createTD(value, id) {
+                    let td = document.createElement("td");
+                    td.innerHTML = value;
+                    td.id = id;
+                    trAlt.appendChild(td);
+                }
+
+                createTD(bot.alt_balances[alt].alt_name, "name" + id + alt);
+                createTD(bot.alt_balances[alt].balance, "balance" + id + alt);
+                createTD(bot.alt_balances[alt].buy_price, "buyPrice" + id + alt);
+                createTD(bot.alt_balances[alt].profit_price, "profitPrice" + id + alt);
+                createTD(bot.alt_balances[alt].grow_profit_price, "growProfitPrice" + id + alt);
+                createTD(bot.alt_balances[alt].top_asc, "topAsc" + id + alt);
+
+                tradeSellStatus.appendChild(trAlt);
+            } else {
+                document.getElementById("name" + id + alt).innerHTML = bot.alt_balances[alt].alt_name;
+                document.getElementById("balance" + id + alt).innerHTML = bot.alt_balances[alt].balance;
+                document.getElementById("buyPrice" + id + alt).innerHTML = bot.alt_balances[alt].buy_price;
+                document.getElementById("profitPrice" + id + alt).innerHTML = bot.alt_balances[alt].profit_price;
+                document.getElementById("growProfitPrice" + id + alt).innerHTML = bot.alt_balances[alt].grow_profit_price;
+                document.getElementById("topAsc" + id + alt).innerHTML = bot.alt_balances[alt].top_asc;
+            }
         }
     }
 }
@@ -79,11 +110,13 @@ function UpdateBuyStatus(id, bot) {
         buyStatusBlock.innerHTML = "Нет денег :(";
         return
     }
-
-    if (bot.active_markets) {
-        //TODO
-    } else {
-        buyStatusBlock.innerHTML = "В активном поиске"
+    // выводить полностью ордер по которому покует бот
+    if (bot.active_markets && !bot.buy_order) {
+        buyStatusBlock.innerHTML = "Анализирую рынок " + bot.active_markets;
+    } else if (bot.active_markets && bot.buy_order) {
+        buyStatusBlock.innerHTML = "Имею ордер на покупку в " + bot.buy_order.Exchange;
+    } else if (!bot.active_markets && !bot.buy_order) {
+        buyStatusBlock.innerHTML = "В активном поиске";
     }
 }
 
@@ -105,6 +138,7 @@ function UpdateLog(id, bot) {
 
             logBlock.appendChild(time);
             logBlock.appendChild(logRow);
+            logBlock.appendChild(document.createElement("br"));
         }
     }
 }
