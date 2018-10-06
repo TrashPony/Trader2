@@ -29,10 +29,17 @@ function UpdateHeaderInfo(id, bot) {
     tdName.innerHTML = id.split("-")[0]; // а то уиды длинные не влезают)
 
     let tdEfficiency = document.getElementById("Efficiency" + id);
-    let efficiency = 100 - (bot.start_btc_cash * 100 / bot.available__btc_cash);
-    tdEfficiency.innerHTML = efficiency;
 
-    // TODO учитывать альты при расчете эфективности
+    let botBTCAvailable = bot.available__btc_cash;
+
+    for (let alt in bot.alt_balances) {
+        if (bot.alt_balances.hasOwnProperty(alt)) {
+            botBTCAvailable = botBTCAvailable + (bot.alt_balances[alt].balance * bot.alt_balances[alt].top_asc)
+        }
+    }
+
+    let efficiency = (100 - (bot.start_btc_cash * 100 / botBTCAvailable)).toFixed(3);
+    tdEfficiency.innerHTML = efficiency;
 
     if (efficiency < 0) {
         tdEfficiency.className = "Failed"
@@ -52,10 +59,10 @@ function UpdateIcon(id, bot) {
 function UpdateCashTable(id, bot) {
 
     let startBTCCash = document.getElementById("StartBTCCash" + id);
-    startBTCCash.innerHTML = bot.start_btc_cash;
+    startBTCCash.innerHTML = bot.start_btc_cash.toFixed(8);
 
     let availableBTCCash = document.getElementById("AvailableBTCCash" + id);
-    availableBTCCash.innerHTML = bot.available__btc_cash;
+    availableBTCCash.innerHTML = bot.available__btc_cash.toFixed(8);
 
     let inTradeStrategy = document.getElementById("InTradeStrategy" + id);
     inTradeStrategy.innerHTML = bot.in_trade_strategy.name;
@@ -84,20 +91,20 @@ function UpdateAltTable(id, bot) {
                 }
 
                 createTD(bot.alt_balances[alt].alt_name, "name" + id + alt);
-                createTD(bot.alt_balances[alt].balance, "balance" + id + alt);
-                createTD(bot.alt_balances[alt].buy_price, "buyPrice" + id + alt);
-                createTD(bot.alt_balances[alt].profit_price, "profitPrice" + id + alt);
-                createTD(bot.alt_balances[alt].grow_profit_price, "growProfitPrice" + id + alt);
-                createTD(bot.alt_balances[alt].top_asc, "topAsc" + id + alt);
+                createTD(bot.alt_balances[alt].balance.toFixed(8), "balance" + id + alt);
+                createTD(bot.alt_balances[alt].buy_price.toFixed(8), "buyPrice" + id + alt);
+                createTD(bot.alt_balances[alt].profit_price.toFixed(8), "profitPrice" + id + alt);
+                createTD(bot.alt_balances[alt].grow_profit_price.toFixed(8), "growProfitPrice" + id + alt);
+                createTD(bot.alt_balances[alt].top_asc.toFixed(8), "topAsc" + id + alt);
 
                 tradeSellStatus.appendChild(trAlt);
             } else {
                 document.getElementById("name" + id + alt).innerHTML = bot.alt_balances[alt].alt_name;
-                document.getElementById("balance" + id + alt).innerHTML = bot.alt_balances[alt].balance;
-                document.getElementById("buyPrice" + id + alt).innerHTML = bot.alt_balances[alt].buy_price;
-                document.getElementById("profitPrice" + id + alt).innerHTML = bot.alt_balances[alt].profit_price;
-                document.getElementById("growProfitPrice" + id + alt).innerHTML = bot.alt_balances[alt].grow_profit_price;
-                document.getElementById("topAsc" + id + alt).innerHTML = bot.alt_balances[alt].top_asc;
+                document.getElementById("balance" + id + alt).innerHTML = bot.alt_balances[alt].balance.toFixed(8);
+                document.getElementById("buyPrice" + id + alt).innerHTML = bot.alt_balances[alt].buy_price.toFixed(8);
+                document.getElementById("profitPrice" + id + alt).innerHTML = bot.alt_balances[alt].profit_price.toFixed(8);
+                document.getElementById("growProfitPrice" + id + alt).innerHTML = bot.alt_balances[alt].grow_profit_price.toFixed(8);
+                document.getElementById("topAsc" + id + alt).innerHTML = bot.alt_balances[alt].top_asc.toFixed(8);
             }
         }
     }
