@@ -34,7 +34,8 @@ func Run(account *traderInfo.Account) {
 	}
 
 	//if account.StartBTC > 0.0005 {
-	// пока только 1 бот и у него нет денег :)
+
+	go traderInfo.UpdateActualMarketPool() // обновляет список всех маркетов, и обновляется каждые 2 часа
 
 	baseInAlgorithm := &Analyze.AnalyzerInTrade{Name: "BaseInAlgorithm"}
 	baseOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "BaseOutAlgorithm"}

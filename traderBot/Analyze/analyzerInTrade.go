@@ -1,6 +1,9 @@
 package Analyze
 
-import "../../traderInfo"
+import (
+	"../../traderInfo"
+	"../../utils"
+)
 
 /**
  * Created by trash on 09.08.2017.
@@ -53,9 +56,9 @@ func BaseInAlgorithm(market *traderInfo.Market) (buy bool, fast bool) {
 	Last, _ := market.MarketSummary.Last.Float64()
 
 	avgLowHigh := (Low + High) / 2
-	differenceAskBind := PercentageCalculator(Bid+0.00000001, Ask-0.00000001)
-	demand := PercentageCalculator(float64(market.MarketSummary.OpenSellOrders), float64(market.MarketSummary.OpenBuyOrders))
-	second := PercentageCalculator(FirstOrderBuy, SecondOrderBuy)
+	differenceAskBind := utils.PercentageCalculator(Bid+0.00000001, Ask-0.00000001)
+	demand := utils.PercentageCalculator(float64(market.MarketSummary.OpenSellOrders), float64(market.MarketSummary.OpenBuyOrders))
+	second := utils.PercentageCalculator(FirstOrderBuy, SecondOrderBuy)
 
 	// boolean sumCap = market.summ25QuantityOrderBidsBook > (market.summ25QuantityOrderAsksBook * 1.5);
 	// boolean historyProf = readHistoryMarket(market, params, log);

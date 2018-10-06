@@ -74,6 +74,12 @@ function UpdateAltTable(id, bot) {
 
 function UpdateBuyStatus(id, bot) {
     let buyStatusBlock = document.getElementById("BuyStatus" + id);
+
+    if (bot.available__btc_cash < 0.0005) {
+        buyStatusBlock.innerHTML = "Нет денег :(";
+        return
+    }
+
     if (bot.active_markets) {
         //TODO
     } else {

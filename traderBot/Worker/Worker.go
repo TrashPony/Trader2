@@ -14,6 +14,7 @@ import (
 var PoolWorker = make(map[string]*Worker)
 
 type Worker struct {
+	ID               string                    `json:"id"`
 	InTradeStrategy  *Analyze.AnalyzerInTrade  `json:"in_trade_strategy"`
 	OutTradeStrategy *Analyze.AnalyzerOutTrade `json:"out_trade_strategy"`
 	StartBTCCash     float64                   `json:"start_btc_cash"`
@@ -37,9 +38,10 @@ func (worker *Worker) Run(fee float64) bool {
 	go worker.TradeBuyBot()
 	go worker.TradeSellBot()
 
-	worker.AddLog("я родился :)")
+	worker.ID = newUUID()
+	PoolWorker[worker.ID] = worker
 
-	PoolWorker[newUUID()] = worker
+	worker.AddLog("я родился :)")
 	return true
 	//} else {
 	//	return false

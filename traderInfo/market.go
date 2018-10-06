@@ -14,6 +14,43 @@ type Market struct {
 	MyOpenOrders  []bittrex.Order       `json:"my_open_orders"`
 }
 
+func GetMarket(MarketName string) *Market {
+	marketSummary, err := GetBittrex().GetMarketSummary(MarketName)
+	if err != nil {
+		println(err.Error())
+		return nil
+	}
+
+	ordersBuy, err := GetBittrex().GetOrderBookBuySell(MarketName, "buy")
+	if err != nil {
+		println(err.Error())
+		return nil
+	}
+
+	ordersSell, err := GetBittrex().GetOrderBookBuySell(MarketName, "sell")
+	if err != nil {
+		println(err.Error())
+		return nil
+	}
+
+	marketHistory, err := GetBittrex().GetMarketHistory(MarketName)
+	if err != nil {
+		println(err.Error())
+		return nil
+	}
+
+	myOpenOrders, err := GetBittrex().GetOpenOrders(MarketName)
+	if err != nil {
+		println(err.Error())
+		return nil
+	}
+
+	market := Market{CurrencyPair: MarketName, MarketSummary: marketSummary[0], OrdersBuy: ordersBuy,
+		OrdersSell: ordersSell, MarketHistory: marketHistory, MyOpenOrders: myOpenOrders}
+
+	return &market
+}
+
 func (market *Market) UpdateMarket() error {
 	marketSummary, err := GetBittrex().GetMarketSummary(market.CurrencyPair)
 	if err != nil {

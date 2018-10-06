@@ -2,8 +2,7 @@ package Worker
 
 import (
 	"../../traderInfo"
-	"../Analyze"
-	"fmt"
+	"../../utils"
 	"github.com/shopspring/decimal"
 	"time"
 )
@@ -31,25 +30,23 @@ func (worker *Worker) TradeSellBot() {
 			if sell {
 
 				var priceSell float64
-				var priceSellOk bool
 
 				if fast { // если фаст значит из рынка нужно выйти немедленно
-					priceSell, priceSellOk = market.OrdersBuy[0].Rate.Float64()
+					priceSell, _ = market.OrdersBuy[0].Rate.Float64()
+					worker.AddLog("Fast sell - " + market.CurrencyPair)
 				} else {
-					priceSell, priceSellOk = market.OrdersSell[0].Rate.Float64()
-					if priceSellOk {
-						priceSell -= 0.00000001 // уменьшаем на 1 сатоши что бы стать самым первым ордером в стакане
-					}
+					priceSell, _ = market.OrdersSell[0].Rate.Float64()
+					priceSell -= 0.00000001 // уменьшаем на 1 сатоши что бы стать самым первым ордером в стакане
+					worker.AddLog("Slow sell - " + market.CurrencyPair)
 				}
 
-				if priceSellOk {
-					uuidSellOrder, err = market.SellLimit(decimal.NewFromFloat(altBalances.Balance), decimal.NewFromFloat(priceSell))
-					if err != nil {
-						println(err.Error())
-					}
-
-					sellRate = priceSell
+				uuidSellOrder, err = market.SellLimit(decimal.NewFromFloat(altBalances.Balance), decimal.NewFromFloat(priceSell))
+				if err != nil {
+					println(err.Error())
+					worker.AddLog("Error sell - " + market.CurrencyPair + err.Error())
 				}
+
+				sellRate = priceSell
 
 			} else {
 
@@ -75,12 +72,12 @@ func (worker *Worker) TradeSellBot() {
 							if err != nil {
 							} else {
 
-								firstRate, okRate := first.Rate.Float64()
+								firstRate, _ := first.Rate.Float64()
 								sell, _, newProfit, asc := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
 								altBalances.GrowProfitPrice = newProfit
 								altBalances.TopAsc = asc
 
-								if okRate && firstRate < sellRate && sell {
+								if firstRate < sellRate && sell {
 									// если у первого заказа цена выше чем у наc
 									// и рынок досихпор считается перспективным то пересоздаем ордер
 									err = market.CancelOrder(uuidSellOrder)
@@ -90,6 +87,8 @@ func (worker *Worker) TradeSellBot() {
 										uuidSellOrder = ""
 										sellRate = 0
 									}
+
+									worker.AddLog("Cancel sell - " + market.CurrencyPair)
 								}
 							}
 						} else {
@@ -98,7 +97,8 @@ func (worker *Worker) TradeSellBot() {
 							worker.AvailableBTCCash += buyAltCount * sellRate  // высчитывает заработаные BTC
 							altBalances.Balance -= buyAltCount                 // отнимать у баланса валюты проданые монеты
 
-							fmt.Print("Продалась часть закупа с выгодой ", Analyze.PercentageCalculator(altBalances.ProfitPrice, sellRate))
+							worker.AddLog("Продалась часть закупа с выгодой " +
+								utils.FloatToString(utils.PercentageCalculator(altBalances.ProfitPrice, sellRate)))
 						}
 					}
 				}
@@ -109,7 +109,8 @@ func (worker *Worker) TradeSellBot() {
 					uuidSellOrder = ""
 					sellRate = 0
 
-					fmt.Print("Продалось относительно начального закупа с выгодой ", Analyze.PercentageCalculator(altBalances.ProfitPrice, sellRate))
+					worker.AddLog("Продалось относительно начального закупа с выгодой " +
+						utils.FloatToString(utils.PercentageCalculator(altBalances.ProfitPrice, sellRate)))
 
 					worker.RemoveAlt(altBalances)
 				}

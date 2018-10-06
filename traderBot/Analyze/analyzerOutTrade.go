@@ -2,6 +2,7 @@ package Analyze
 
 import (
 	"../../traderInfo"
+	"../../utils"
 	"fmt"
 )
 
@@ -21,18 +22,18 @@ func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice fl
 	Ask, _ = market.MarketSummary.Ask.Float64()
 
 	if Ask > GrowProfitPrice {
-		startDifference := PercentageCalculator(GrowProfitPrice, Ask)
+		startDifference := utils.PercentageCalculator(GrowProfitPrice, Ask)
 		newProfit = Ask
 		fmt.Print("СП: ", GrowProfitPrice, " НП: ", newProfit, " up ", startDifference, " % ")
 		return false, false, newProfit, Ask
 	}
 
 	if Ask <= GrowProfitPrice {
-		difference := PercentageCalculator(GrowProfitPrice, Ask)
-		startDifference := PercentageCalculator(startProfit, Ask)
+		difference := utils.PercentageCalculator(GrowProfitPrice, Ask)
+		startDifference := utils.PercentageCalculator(startProfit, Ask)
 
 		if difference < -2 {
-			fmt.Print("Цена упала на - 2%, Экстренный перезакуп!!!", PercentageCalculator(GrowProfitPrice, Ask))
+			fmt.Print("Цена упала на - 2%, Экстренный перезакуп!!!", utils.PercentageCalculator(GrowProfitPrice, Ask))
 			return true, true, GrowProfitPrice, Ask
 		}
 
