@@ -43,6 +43,12 @@
     margin-top: 15px;
 }
 
+.cashTable sub {
+    display: inline-block;
+    color: #fff91e;
+    text-shadow: #28a5e4 0 0 4px;
+}
+
 .option, .Value {
     width: 100px;
     font-size: 12px;

@@ -34,7 +34,9 @@ function UpdateHeaderInfo(id, bot) {
 
     for (let alt in bot.alt_balances) {
         if (bot.alt_balances.hasOwnProperty(alt)) {
-            botBTCAvailable = botBTCAvailable + (bot.alt_balances[alt].balance * bot.alt_balances[alt].top_asc)
+            botBTCAvailable = botBTCAvailable + (bot.alt_balances[alt].balance * bot.alt_balances[alt].top_asc);
+            let fee = (0.25 * botBTCAvailable) / 100;
+            botBTCAvailable = botBTCAvailable - fee;
         }
     }
 
@@ -61,8 +63,17 @@ function UpdateCashTable(id, bot) {
     let startBTCCash = document.getElementById("StartBTCCash" + id);
     startBTCCash.innerHTML = bot.start_btc_cash.toFixed(8);
 
+    let altToBTC = 0;
+    for (let alt in bot.alt_balances) {
+        if (bot.alt_balances.hasOwnProperty(alt)) {
+            altToBTC = altToBTC + (bot.alt_balances[alt].balance * bot.alt_balances[alt].top_asc);
+            let fee = (0.25 * altToBTC) / 100;
+            altToBTC = altToBTC - fee;
+        }
+    }
+
     let availableBTCCash = document.getElementById("AvailableBTCCash" + id);
-    availableBTCCash.innerHTML = bot.available__btc_cash.toFixed(8);
+    availableBTCCash.innerHTML = bot.available__btc_cash.toFixed(8) + " <sub>+" + altToBTC.toFixed(8) + "</sub>";
 
     let inTradeStrategy = document.getElementById("InTradeStrategy" + id);
     inTradeStrategy.innerHTML = bot.in_trade_strategy.name;
@@ -99,6 +110,7 @@ function UpdateAltTable(id, bot) {
 
                 tradeSellStatus.appendChild(trAlt);
             } else {
+                // TODO подсвелка профита если ниже аска то красным если выше то зеленым или добавить еще 1 столбец с % профита
                 document.getElementById("name" + id + alt).innerHTML = bot.alt_balances[alt].alt_name;
                 document.getElementById("balance" + id + alt).innerHTML = bot.alt_balances[alt].balance.toFixed(8);
                 document.getElementById("buyPrice" + id + alt).innerHTML = bot.alt_balances[alt].buy_price.toFixed(8);
