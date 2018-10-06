@@ -34,7 +34,7 @@ function CreateTradeBuyStatus(id) {
 function CreateTradeSellStatus(id) {
     let tradeSellStatus = document.createElement("div");
     tradeSellStatus.className = "TradeSellStatus";
-    tradeSellStatus.id = "TradeSellStatus" + id;
+    tradeSellStatus.id = "TradeSellStatus";
 
     let spanHead = document.createElement("span");
     spanHead.innerHTML = "Sell status";
@@ -46,6 +46,8 @@ function CreateTradeSellStatus(id) {
 
     let altCashTable = document.createElement("table");
     altCashTable.className = "altCash";
+    altCashTable.id = "altCash" + id;
+
 
     let tr = document.createElement("tr");
 

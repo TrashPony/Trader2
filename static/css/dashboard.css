@@ -109,8 +109,10 @@
 .altCash td {
     border-left: 1px solid #25a0e1;
     border-right: 1px solid #25a0e1;
-    font-size: 11px;
+    font-size: 10px;
     text-align: center;
+    color: #fff91e;
+    text-shadow: #28a5e4 0 0 4px;
 }
 
 .altCash tr td:first-child {
@@ -123,6 +125,9 @@
 
 .altCash tr:first-child td {
     border-bottom: 1px solid #25a0e1;
+    font-size: 10px;
+    color: #00fffd;
+    text-shadow: #28a5e4 0 0 4px;
 }
 
 .log {

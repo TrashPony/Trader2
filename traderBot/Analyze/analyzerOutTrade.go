@@ -24,7 +24,7 @@ func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice fl
 	if Ask > GrowProfitPrice {
 		startDifference := utils.PercentageCalculator(GrowProfitPrice, Ask)
 		newProfit = Ask
-		fmt.Print("СП: ", GrowProfitPrice, " НП: ", newProfit, " up ", startDifference, " % ")
+		fmt.Println("СП: ", GrowProfitPrice, " НП: ", newProfit, " up ", startDifference, " % ")
 		return false, false, newProfit, Ask
 	}
 
@@ -33,12 +33,12 @@ func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice fl
 		startDifference := utils.PercentageCalculator(startProfit, Ask)
 
 		if difference < -2 {
-			fmt.Print("Цена упала на - 2%, Экстренный перезакуп!!!", utils.PercentageCalculator(GrowProfitPrice, Ask))
+			fmt.Println("Цена упала на - 2%, Экстренный перезакуп!!!", utils.PercentageCalculator(GrowProfitPrice, Ask))
 			return true, true, GrowProfitPrice, Ask
 		}
 
 		if startDifference > 0.3 {
-			fmt.Print("Алгоритм посчитал что рынок больше не эффективен")
+			fmt.Println("Алгоритм посчитал что рынок больше не эффективен")
 			return true, false, GrowProfitPrice, Ask
 		}
 	}
