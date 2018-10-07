@@ -62,8 +62,11 @@ function CreateTradeSellStatus(id) {
     createTD("Balance");
     createTD("BuyPrice");
     createTD("ProfitPrice");
-    createTD("GrowProfitPrice");
-    createTD("TopAscOrder");
+    createTD("MaxPrice");
+    createTD("TopAsc");
+    createTD("SellRate");
+    createTD("%");
+
 
     altCashTable.appendChild(tr);
 

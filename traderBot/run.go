@@ -32,15 +32,27 @@ func Run(account *traderInfo.Account) {
 		}
 	}
 
-	if account.StartBTC >= 0.00075 {
+	if account.StartBTC >= 0.00075 { // * 3
 
 		go traderInfo.UpdateActualMarketPool() // обновляет список всех маркетов, и обновляется каждые 2 часа
 
-		baseInAlgorithm := &Analyze.AnalyzerInTrade{Name: "BaseInAlgorithm"}
-		baseOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "BaseOutAlgorithm"}
+		fastInAlgorithm := &Analyze.AnalyzerInTrade{Name: "fast"}
+		fastOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "fast"}
 
-		newWorker := &Worker.Worker{StartBTCCash: 0.00075, InTradeStrategy: baseInAlgorithm, OutTradeStrategy: baseOutAlgorithm}
+		SlowInAlgorithm := &Analyze.AnalyzerInTrade{Name: "slow"}
+		SlowOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "slow"}
+
+		verySlowInAlgorithm := &Analyze.AnalyzerInTrade{Name: "verySlow"}
+		verySlowOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "verySlow"}
+
+		newWorker := &Worker.Worker{TradeStrategy: "Fast", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
 		newWorker.Run(FEE)
+
+		newWorker2 := &Worker.Worker{TradeStrategy: "Slow", StartBTCCash: 0.00075, InTradeStrategy: SlowInAlgorithm, OutTradeStrategy: SlowOutAlgorithm}
+		newWorker2.Run(FEE)
+
+		newWorker3 := &Worker.Worker{TradeStrategy: "VerySlow", StartBTCCash: 0.00075, InTradeStrategy: verySlowInAlgorithm, OutTradeStrategy: verySlowOutAlgorithm}
+		newWorker3.Run(FEE)
 
 	} else {
 		println("Ты бомж :(")

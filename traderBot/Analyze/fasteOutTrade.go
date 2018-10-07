@@ -6,18 +6,6 @@ import (
 	"fmt"
 )
 
-type AnalyzerOutTrade struct {
-	Name string `json:"name"`
-}
-
-func (analyze *AnalyzerOutTrade) Analyze(market *traderInfo.Market, startProfit, GrowProfitPrice float64) (Sell bool, fast bool, newProfit float64, Ask float64) {
-	if analyze.Name == "BaseOutAlgorithm" {
-		return BaseOutAlgorithm(market, startProfit, GrowProfitPrice)
-	}
-
-	return false, false, GrowProfitPrice, GrowProfitPrice
-}
-
 func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice float64) (Sell bool, fast bool, newProfit float64, Ask float64) {
 	Ask, _ = market.MarketSummary.Ask.Float64()
 
@@ -37,7 +25,7 @@ func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice fl
 			return true, true, GrowProfitPrice, Ask
 		}
 
-		if startDifference > 0.3 {
+		if startDifference > 0.2 {
 			fmt.Println("Алгоритм посчитал что рынок больше не эффективен")
 			return true, false, GrowProfitPrice, Ask
 		}

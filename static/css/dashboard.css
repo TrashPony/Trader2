@@ -10,20 +10,19 @@
 }
 
 .bots, .botIcon {
-    height: 435px;
-    width: 400px;
+    height: 455px;
+    width: 450px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
     border: 1px solid #25a0e1;
     border-radius: 10px;
     float: left;
-    margin: 25px;
+    margin: 10px 5px;
 }
 
 .bots .botIcon {
     height: 100px;
     width: 100px;
-    margin: 10px 12px;
-    margin-top: 15px;
+    margin: 25px 15px 0 10px;
     float: left;
     background: no-repeat;
     background-size: 100%;
@@ -36,7 +35,7 @@
 }
 
 .cashTable {
-    width: 260px;
+    width: 310px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
     border: 1px solid #25a0e1;
     border-radius: 10px;
@@ -47,6 +46,7 @@
     display: inline-block;
     color: #fff91e;
     text-shadow: #28a5e4 0 0 4px;
+    font-size: 9px;
 }
 
 .option, .Value {
@@ -65,14 +65,14 @@
 
 .TradeStatus {
     margin: 20px 7px;
-    width: 400px;
+    width: 450px;
 }
 
 .TradeSellStatus, .TradeBuyStatus, .log {
     box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
     border: 1px solid #25a0e1;
     border-radius: 10px;
-    width: 380px;
+    width: 430px;
     margin-bottom: 10px;
 }
 
@@ -90,7 +90,6 @@
     border: 1px solid #25a0e1;
     border-radius: 10px;
     margin-top: 5px;
-    margin-left: 10px;
     width: 260px;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
 }
@@ -101,8 +100,8 @@
 }
 
 .altCash {
-    width: 355px;
-    margin-left: 5px;
+    width: 410px;
+    margin: 0 auto;
     border: 1px solid #25a0e1;
 }
 
@@ -138,7 +137,7 @@
 
 .log {
     height: 73px;
-    width: 358px;
+    width: 408px;
     margin: -10px 0 7px 7px;
     padding: 10px;
     word-wrap: break-word;

@@ -7,10 +7,12 @@ import (
 	"time"
 )
 
-func (worker *Worker) TradeSellBot() {
+func (worker *Worker) FastTradeSell() {
 	for {
 		for _, altBalances := range worker.AltBalances { // берем прошлые сделки покупок
-			sellAltCoin(worker, altBalances)
+			if !altBalances.Sell && altBalances.Balance*altBalances.ProfitPrice > 0.0006 {
+				sellAltCoin(worker, altBalances)
+			}
 		}
 		time.Sleep(1 * time.Second) // без этих слипов система виснет
 	}
@@ -59,6 +61,7 @@ func sellAltCoin(worker *Worker, altBalances *Alt) {
 		sellQuantityAlt, _ := altBalances.SellOrder.Quantity.Float64()
 		sellQuantityRemaining, _ := altBalances.SellOrder.QuantityRemaining.Float64()
 		sellRate, _ := altBalances.SellOrder.Limit.Float64()
+		fee, _ := altBalances.SellOrder.CommissionReserved.Float64() // это комисиия в оредере
 
 		if sellOrder.IsOpen {
 			if sellQuantityAlt == sellQuantityRemaining {
@@ -88,22 +91,23 @@ func sellAltCoin(worker *Worker, altBalances *Alt) {
 				}
 			} else {
 				// частичный выкуп
-				sellAltCount := sellQuantityAlt - sellQuantityRemaining // высчитываем сколько купили
-				worker.AvailableBTCCash += sellAltCount * sellRate      // высчитывает заработаные BTC
-				altBalances.Balance -= sellAltCount                     // отнимать у баланса валюты проданые монеты
+				sellAltCount := sellQuantityAlt - sellQuantityRemaining    // высчитываем сколько купили
+				worker.AvailableBTCCash += (sellAltCount * sellRate) - fee // высчитывает заработаные BTC
+				altBalances.Balance -= sellAltCount                        // отнимать у баланса валюты проданые монеты
 
 				worker.AddLog("Продалась часть закупа с выгодой " +
 					utils.FloatToString(utils.PercentageCalculator(altBalances.ProfitPrice, sellRate)))
 			}
 		} else {
 			// выкупили полностью
-			worker.AvailableBTCCash += altBalances.Balance * sellRate
+			worker.AvailableBTCCash += (altBalances.Balance * sellRate) - fee
 			sellOrder = nil
+
+			altBalances.Sell = true
+			altBalances.SellRate = sellRate
 
 			worker.AddLog("Продалось относительно начального закупа с выгодой " +
 				utils.FloatToString(utils.PercentageCalculator(altBalances.ProfitPrice, sellRate)))
-
-			worker.RemoveAlt(altBalances)
 		}
 	}
 }

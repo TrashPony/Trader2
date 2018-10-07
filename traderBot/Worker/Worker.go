@@ -2,21 +2,17 @@ package Worker
 
 import (
 	"../Analyze"
-	"crypto/rand"
-	"fmt"
 	"github.com/toorop/go-bittrex"
-	"io"
 	"strconv"
 	"sync"
 	"time"
 )
 
-var PoolWorker = make(map[string]*Worker)
-
 type Worker struct {
 	ID               string                    `json:"id"`
 	InTradeStrategy  *Analyze.AnalyzerInTrade  `json:"in_trade_strategy"`
 	OutTradeStrategy *Analyze.AnalyzerOutTrade `json:"out_trade_strategy"`
+	TradeStrategy    string                    `json:"trade_strategy"`
 	StartBTCCash     float64                   `json:"start_btc_cash"`
 	AvailableBTCCash float64                   `json:"available__btc_cash"`
 	BuyActiveMarket  string                    `json:"active_markets"`
@@ -35,8 +31,21 @@ func (worker *Worker) Run(fee float64) bool {
 		worker.AltBalances = make(map[string]*Alt)
 		worker.Log = make([]LogWorker, 0)
 
-		go worker.TradeBuyBot()
-		go worker.TradeSellBot()
+		if worker.TradeStrategy == "Fast" {
+			go worker.FastTradeBuy()
+			go worker.FastTradeSell()
+		}
+
+		if worker.TradeStrategy == "Slow" {
+			// TODO более детальный анализ данных, но стратегия торгов таже
+			//go worker.FastTradeBuy()
+			//go worker.FastTradeSell()
+		}
+
+		if worker.TradeStrategy == "VerySlow" {
+			// TODO покупать дешевле на 10% от цены покупки ждать сутки если не купили пересоздавать ордер
+			// TODO если купили ждать профитного ордера и сливать
+		}
 
 		worker.ID = newUUID()
 		PoolWorker[worker.ID] = worker
@@ -56,6 +65,8 @@ type Alt struct {
 	GrowProfitPrice float64         `json:"grow_profit_price"` // нарастающий профит
 	TopAsc          float64         `json:"top_asc"`
 	SellOrder       *bittrex.Order2 `json:"sell_order"` // ордер в пачке если он есть
+	Sell            bool            `json:"sell"`       // уже продана
+	SellRate        float64         `json:"sell_rate"`  // цена за которую продал бот
 }
 
 func (worker *Worker) AddAlt(altName string, balance, buyPrice, profitPrice float64) {
@@ -86,19 +97,4 @@ func (worker *Worker) AddLog(log string) {
 type LogWorker struct {
 	Time time.Time `json:"time"`
 	Log  string    `json:"log"`
-}
-
-func newUUID() string {
-	uuid := make([]byte, 16)
-	n, err := io.ReadFull(rand.Reader, uuid)
-	if n != len(uuid) || err != nil {
-		return ""
-	}
-	uuid[8] = uuid[8]&^0xc0 | 0x80
-	uuid[6] = uuid[6]&^0xf0 | 0x40
-	return fmt.Sprintf("%x-%x-%x-%x-%x", uuid[0:4], uuid[4:6], uuid[6:8], uuid[8:10], uuid[10:])
-}
-
-func GetPoolWorker() map[string]*Worker {
-	return PoolWorker
 }

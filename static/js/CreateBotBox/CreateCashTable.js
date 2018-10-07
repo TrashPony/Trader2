@@ -22,6 +22,7 @@ function CreateCashTable(id) {
     CreateRow("Available BTC Cash", "AvailableBTCCash" + id);
     CreateRow("In Trade Strategy", "InTradeStrategy" + id);
     CreateRow("Out Trade Strategy", "OutTradeStrategy" + id);
+    CreateRow("Trade Strategy", "TradeStrategy" + id);
 
     return table;
 }
