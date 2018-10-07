@@ -39,19 +39,13 @@ func Run(account *traderInfo.Account) {
 		fastInAlgorithm := &Analyze.AnalyzerInTrade{Name: "fast"}
 		fastOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "fast"}
 
-		SlowInAlgorithm := &Analyze.AnalyzerInTrade{Name: "slow"}
-		SlowOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "slow"}
-
-		verySlowInAlgorithm := &Analyze.AnalyzerInTrade{Name: "verySlow"}
-		verySlowOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "verySlow"}
-
 		newWorker := &Worker.Worker{TradeStrategy: "Fast", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
 		newWorker.Run(FEE)
 
-		newWorker2 := &Worker.Worker{TradeStrategy: "Slow", StartBTCCash: 0.00075, InTradeStrategy: SlowInAlgorithm, OutTradeStrategy: SlowOutAlgorithm}
+		newWorker2 := &Worker.Worker{TradeStrategy: "Slow", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
 		newWorker2.Run(FEE)
 
-		newWorker3 := &Worker.Worker{TradeStrategy: "VerySlow", StartBTCCash: 0.00075, InTradeStrategy: verySlowInAlgorithm, OutTradeStrategy: verySlowOutAlgorithm}
+		newWorker3 := &Worker.Worker{TradeStrategy: "VerySlow", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
 		newWorker3.Run(FEE)
 
 	} else {

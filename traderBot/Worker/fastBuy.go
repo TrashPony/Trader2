@@ -9,8 +9,6 @@ import (
 )
 
 func (worker *Worker) FastTradeBuy() {
-	// TODO мониторить кто на каком рынке пытается купить валюту, что бы не мешать друг другу
-	// TODO неправильно считается коммисия и профит прайс
 	for {
 		if worker.AvailableBTCCash >= 0.0006 {
 

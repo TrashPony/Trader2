@@ -43,8 +43,8 @@ func (worker *Worker) Run(fee float64) bool {
 		}
 
 		if worker.TradeStrategy == "VerySlow" {
-			// TODO покупать дешевле на 10% от цены покупки ждать сутки если не купили пересоздавать ордер
-			// TODO если купили ждать профитного ордера и сливать
+			go worker.VerySlowTradeBuy()
+			go worker.FastTradeSell()
 		}
 
 		worker.ID = newUUID()
