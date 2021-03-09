@@ -3,20 +3,19 @@
     height: 480px;
     width: 1400px;
     border-radius: 10px;
-    border: 1px solid #25a0e1;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
-    background-size: 100% 2px, 4px 4px, cover;
-    animation: menuAnimation 3000ms linear infinite;
+    border-bottom: 1px solid rgba(37, 160, 225, .75);
+    background: rgba(8, 138, 210, .75);
+    box-shadow: 0 0 2px #000;
 }
 
 .bots, .botIcon {
     height: 455px;
     width: 450px;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
-    border: 1px solid #25a0e1;
+    box-shadow: inset 0 0 2px black;
     border-radius: 10px;
     float: left;
     margin: 10px 5px;
+    background: rgba(121, 121, 121, 0.7);
 }
 
 .bots .botIcon {
@@ -117,7 +116,7 @@
     font-size: 10px;
     text-align: center;
     color: #fff91e;
-    text-shadow: #28a5e4 0 0 4px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
 .altCash tr td:first-child {

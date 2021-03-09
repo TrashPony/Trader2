@@ -1,13 +1,18 @@
 package Analyze
 
 import (
-	"../../traderInfo"
-	"../../utils"
 	"fmt"
+	"github.com/TrashPony/Trader2/traderInfo"
+	"github.com/TrashPony/Trader2/utils"
+	"strconv"
 )
 
-func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice float64) (Sell bool, fast bool, newProfit float64, Ask float64) {
+const emergencyExitPercent = -4
+const profitExit = 2
+
+func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice float64, buy bool) (Sell bool, fast bool, newProfit float64, Ask float64) {
 	Ask, _ = market.MarketSummary.Ask.Float64()
+	Bid, _ := market.MarketSummary.Bid.Float64()
 
 	if Ask > GrowProfitPrice {
 		startDifference := utils.PercentageCalculator(GrowProfitPrice, Ask)
@@ -17,18 +22,25 @@ func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice fl
 	}
 
 	if Ask <= GrowProfitPrice {
+
 		difference := utils.PercentageCalculator(GrowProfitPrice, Ask)
 		startDifference := utils.PercentageCalculator(startProfit, Ask)
 
-		if difference < -2 {
-			fmt.Println("Цена упала на - 2%, Экстренный перезакуп!!!", utils.PercentageCalculator(GrowProfitPrice, Ask))
+		if difference < emergencyExitPercent {
+			fmt.Println("Цена упала на - "+strconv.Itoa(emergencyExitPercent)+"%, Экстренный перезакуп!!!", utils.PercentageCalculator(GrowProfitPrice, Ask))
 			return true, true, GrowProfitPrice, Ask
 		}
 
-		if startDifference > 0.2 {
+		if startDifference > 1 && !buy {
 			fmt.Println("Алгоритм посчитал что рынок больше не эффективен")
 			return true, false, GrowProfitPrice, Ask
 		}
+	}
+
+	profitExitDifference := utils.PercentageCalculator(startProfit, Bid)
+	if profitExitDifference > profitExit {
+		fmt.Println("Алгоритм посчитал что прибыль достаточна и можно выходить")
+		return true, true, GrowProfitPrice, Ask
 	}
 
 	return false, false, GrowProfitPrice, Ask

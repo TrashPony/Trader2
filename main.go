@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./traderBot"
-	"./traderInfo"
-	"./webSocket"
+	"github.com/TrashPony/Trader2/traderBot"
+	"github.com/TrashPony/Trader2/traderInfo"
+	"github.com/TrashPony/Trader2/webSocket"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -22,8 +22,8 @@ func main() {
 
 	go webSocket.Sender()
 
-	log.Println("http server started on :8080")
-	err := http.ListenAndServe(":8080", router)
+	log.Println("http server started on :8083")
+	err := http.ListenAndServe(":8083", router)
 	if err != nil {
 		log.Panic(err)
 	}

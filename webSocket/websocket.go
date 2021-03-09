@@ -1,8 +1,8 @@
 package webSocket
 
 import (
-	"../traderBot/Worker"
-	"../traderInfo"
+	"github.com/TrashPony/Trader2/traderBot/Worker"
+	"github.com/TrashPony/Trader2/traderInfo"
 	"github.com/gorilla/websocket"
 	"net/http"
 	"time"

@@ -1,19 +1,20 @@
 package traderBot
 
 import (
-	"../traderInfo"
-	"./Analyze"
-	"./Worker"
+	"github.com/TrashPony/Trader2/traderBot/Analyze"
+	"github.com/TrashPony/Trader2/traderBot/Worker"
+	"github.com/TrashPony/Trader2/traderInfo"
 )
 
-const FEE = 0.0026 // в процентах 0.26, и сделано множителем тоесть поделено на 100
+const FEE = 0.0035 // в процентах 0.35, и сделано множителем тоесть поделено на 100
+const minBTC = 0.0005
 
 func Run(account *traderInfo.Account) {
 
 	availableMarket := make([]*traderInfo.Market, 0)
 
 	for _, marketBalance := range account.Balances {
-		if !marketBalance.Available.IsZero() && marketBalance.Currency != "BTC" && marketBalance.Currency != "USDT" {
+		if !marketBalance.Available.IsZero() && marketBalance.Currency != "BTC" && marketBalance.Currency != "USDT" && marketBalance.Currency != "USD" {
 			availableMarket = append(availableMarket, traderInfo.GetMarket("BTC-"+marketBalance.Currency))
 		} else {
 			if marketBalance.Currency == "BTC" {
@@ -32,21 +33,21 @@ func Run(account *traderInfo.Account) {
 		}
 	}
 
-	if account.StartBTC >= 0.00075 { // * 3
+	if account.StartBTC >= minBTC { // * 3
 
 		go traderInfo.UpdateActualMarketPool() // обновляет список всех маркетов, и обновляется каждые 2 часа
 
 		fastInAlgorithm := &Analyze.AnalyzerInTrade{Name: "fast"}
 		fastOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "fast"}
 
-		newWorker := &Worker.Worker{TradeStrategy: "Fast", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
+		newWorker := &Worker.Worker{TradeStrategy: "Fast", StartBTCCash: minBTC + 0.00005, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
 		newWorker.Run(FEE)
 
-		newWorker2 := &Worker.Worker{TradeStrategy: "Slow", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
-		newWorker2.Run(FEE)
-
-		newWorker3 := &Worker.Worker{TradeStrategy: "VerySlow", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
-		newWorker3.Run(FEE)
+		//newWorker2 := &Worker.Worker{TradeStrategy: "Slow", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
+		//newWorker2.Run(FEE)
+		//
+		//newWorker3 := &Worker.Worker{TradeStrategy: "VerySlow", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
+		//newWorker3.Run(FEE)
 
 	} else {
 		println("Ты бомж :(")

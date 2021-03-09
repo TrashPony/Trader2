@@ -1,7 +1,7 @@
 package Analyze
 
 import (
-	"../../traderInfo"
+	"github.com/TrashPony/Trader2/traderInfo"
 )
 
 type AnalyzerInTrade struct {

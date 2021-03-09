@@ -1,8 +1,8 @@
 package Worker
 
 import (
-	"../../traderInfo"
-	"../../utils"
+	"github.com/TrashPony/Trader2/traderInfo"
+	"github.com/TrashPony/Trader2/utils"
 	"github.com/shopspring/decimal"
 	"time"
 )
@@ -10,7 +10,7 @@ import (
 func (worker *Worker) FastTradeSell() {
 	for {
 		for _, altBalances := range worker.AltBalances { // берем прошлые сделки покупок
-			if !altBalances.Sell && altBalances.Balance*altBalances.ProfitPrice > 0.0006 {
+			if !altBalances.Sell && altBalances.Balance*altBalances.ProfitPrice >= 0.0005 {
 				sellAltCoin(worker, altBalances)
 			}
 		}
@@ -26,7 +26,8 @@ func sellAltCoin(worker *Worker, altBalances *Alt) {
 	}
 
 	if altBalances.SellOrder == nil {
-		sell, fast, newProfit, asc := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
+		buy, _ := worker.InTradeStrategy.Analyze(market)
+		sell, fast, newProfit, asc := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice, buy)
 
 		altBalances.GrowProfitPrice = newProfit
 		altBalances.TopAsc = asc
@@ -72,7 +73,9 @@ func sellAltCoin(worker *Worker, altBalances *Alt) {
 				} else {
 
 					firstRate, _ := first.Rate.Float64()
-					sell, _, newProfit, asc := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice)
+
+					buy, _ := worker.InTradeStrategy.Analyze(market)
+					sell, _, newProfit, asc := worker.OutTradeStrategy.Analyze(market, altBalances.ProfitPrice, altBalances.GrowProfitPrice, buy)
 					altBalances.GrowProfitPrice = newProfit
 					altBalances.TopAsc = asc
 

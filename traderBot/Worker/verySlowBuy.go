@@ -1,8 +1,8 @@
 package Worker
 
 import (
-	"../../traderInfo"
-	"../../utils"
+	"github.com/TrashPony/Trader2/traderInfo"
+	"github.com/TrashPony/Trader2/utils"
 	"github.com/shopspring/decimal"
 	"strings"
 	"time"
@@ -92,7 +92,7 @@ func (worker *Worker) VerySlowTradeBuy() {
 					} else {
 						// частичный выкуп
 
-						profitPrice := utils.Round((worker.AvailableBTCCash+fee)/buyQuantityAlt, 8)
+						profitPrice := utils.Round((worker.AvailableBTCCash+(fee*2))/buyQuantityAlt, 8)
 
 						buyAltCount := buyQuantityAlt - buyQuantityRemaining
 						worker.AddAlt(strings.Split(market.CurrencyPair, "-")[1], buyAltCount, buyRate, profitPrice)
@@ -106,7 +106,7 @@ func (worker *Worker) VerySlowTradeBuy() {
 				} else {
 					// выкупили полностью
 					//                 ((цена за все коины) + (коммисия)) / (количество монет)
-					profitPrice := utils.Round((worker.AvailableBTCCash+fee)/buyQuantityAlt, 8)
+					profitPrice := utils.Round((worker.AvailableBTCCash+(fee*2))/buyQuantityAlt, 8)
 
 					worker.AddAlt(strings.Split(market.CurrencyPair, "-")[1], buyQuantityAlt, buyRate, profitPrice)
 					//                                         (цена за коины) + (коммисия)

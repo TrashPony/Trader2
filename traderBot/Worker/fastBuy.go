@@ -1,8 +1,8 @@
 package Worker
 
 import (
-	"../../traderInfo"
-	"../../utils"
+	"github.com/TrashPony/Trader2/traderInfo"
+	"github.com/TrashPony/Trader2/utils"
 	"github.com/shopspring/decimal"
 	"strings"
 	"time"
@@ -10,7 +10,9 @@ import (
 
 func (worker *Worker) FastTradeBuy() {
 	for {
-		if worker.AvailableBTCCash >= 0.0006 {
+		time.Sleep(1 * time.Second) // без этих слипов система виснет
+
+		if worker.AvailableBTCCash >= 0.0005 {
 
 			if worker.BuyOrder == nil {
 
@@ -34,18 +36,26 @@ func (worker *Worker) FastTradeBuy() {
 					if buy {
 
 						var priceByu float64
+						var logRow string
 
 						if fast { // если фаст значит в рынок надо войти как можно быстрее )
 							priceByu, _ = market.OrdersSell[0].Rate.Float64()
-							worker.AddLog("Fast buy - " + market.CurrencyPair + " по " + utils.FloatToString(priceByu))
+							logRow = "Fast buy - " + market.CurrencyPair + " по " + utils.FloatToString(priceByu)
 						} else {
 							priceByu, _ = market.OrdersBuy[0].Rate.Float64()
 							priceByu += 0.00000001 // наращиваем 1 сатоши что бы стать самым первым ордером в стакане
-							worker.AddLog("Slow buy - " + market.CurrencyPair + " по " + utils.FloatToString(priceByu))
+							logRow = "Slow buy - " + market.CurrencyPair + " по " + utils.FloatToString(priceByu)
 						}
 
 						fee := worker.AvailableBTCCash * worker.Fee
 						quantity := (worker.AvailableBTCCash - fee) / priceByu
+
+						minSize := traderInfo.Markets.GetMinTradeSize(market.MarketSummary.MarketName)
+						if minSize > quantity {
+							continue
+						}
+
+						worker.AddLog(logRow)
 
 						uuidBuyOrder, err := market.BuyLimit(decimal.NewFromFloat(quantity), decimal.NewFromFloat(priceByu))
 						if err != nil {
@@ -76,7 +86,7 @@ func (worker *Worker) FastTradeBuy() {
 				buyRate, _ := worker.BuyOrder.Limit.Float64()                          // цена покупки
 				fee, _ := worker.BuyOrder.CommissionReserved.Float64()                 // это комисиия в оредере
 
-				price, _ := worker.BuyOrder.Reserved.Float64()       // это сумарная стоимость всех монет в ордере без комисии
+				//price, _ := worker.BuyOrder.Price.Float64()       // это сумарная стоимость всех монет в ордере без комисии
 				priceRemaining, _ := worker.BuyOrder.Price.Float64() // это те деньни которые были потрачены на частичный выкуп
 
 				if worker.BuyOrder.IsOpen {
@@ -106,13 +116,13 @@ func (worker *Worker) FastTradeBuy() {
 					} else {
 						// частичный выкуп
 						//                 ((цена за все коины) + (коммисия)) / (количество монет)
-						profitPrice := utils.Round((worker.AvailableBTCCash+fee)/buyQuantityAlt, 8)
+						profitPrice := utils.Round((worker.AvailableBTCCash+(fee*2))/buyQuantityAlt, 8)
 
 						buyAltCount := buyQuantityAlt - buyQuantityRemaining
 						worker.AddAlt(strings.Split(market.CurrencyPair, "-")[1], buyAltCount, buyRate, profitPrice)
 
 						// todo тут завышеная коммисия т.к. надо высчитывать по доли
-						worker.AvailableBTCCash = worker.AvailableBTCCash - ((price - priceRemaining) + fee)
+						worker.AvailableBTCCash = worker.AvailableBTCCash - ((priceRemaining - priceRemaining) + fee)
 
 						worker.AddLog("Купил частичку" + utils.FloatToString(buyAltCount) + " " + strings.Split(market.CurrencyPair, "-")[1] +
 							" по " + utils.FloatToString(buyRate))
@@ -120,11 +130,11 @@ func (worker *Worker) FastTradeBuy() {
 				} else {
 					// выкупили полностью
 					//                 ((цена за все коины) + (коммисия)) / (количество монет)
-					profitPrice := utils.Round((worker.AvailableBTCCash+fee)/buyQuantityAlt, 8)
+					profitPrice := utils.Round((worker.AvailableBTCCash+(fee*2))/buyQuantityAlt, 8)
 
 					worker.AddAlt(strings.Split(market.CurrencyPair, "-")[1], buyQuantityAlt, buyRate, profitPrice)
 					//                                         (цена за коины) + (коммисия)
-					worker.AvailableBTCCash = worker.AvailableBTCCash - (price + fee)
+					worker.AvailableBTCCash = worker.AvailableBTCCash - (priceRemaining + fee)
 					worker.BuyOrder = nil
 
 					worker.AddLog("Купил " + utils.FloatToString(buyQuantityAlt) + " " + strings.Split(market.CurrencyPair, "-")[1] +
@@ -132,6 +142,5 @@ func (worker *Worker) FastTradeBuy() {
 				}
 			}
 		}
-		time.Sleep(1 * time.Second) // без этих слипов система виснет
 	}
 }

@@ -1,7 +1,7 @@
 package Worker
 
 import (
-	"../Analyze"
+	"github.com/TrashPony/Trader2/traderBot/Analyze"
 	"github.com/toorop/go-bittrex"
 	"strconv"
 	"sync"
@@ -24,7 +24,7 @@ type Worker struct {
 }
 
 func (worker *Worker) Run(fee float64) bool {
-	if worker.StartBTCCash >= 0.00075 && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
+	if worker.StartBTCCash >= worker.StartBTCCash && worker.InTradeStrategy != nil && worker.OutTradeStrategy != nil {
 
 		worker.Fee = fee
 		worker.AvailableBTCCash = worker.StartBTCCash
