@@ -7,8 +7,8 @@ import (
 	"strconv"
 )
 
-const emergencyExitPercent = -4
-const profitExit = 2
+const emergencyExitPercent = -7
+const profitExit = 1
 
 func BaseOutAlgorithm(market *traderInfo.Market, startProfit, GrowProfitPrice float64, buy bool) (Sell bool, fast bool, newProfit float64, Ask float64) {
 	Ask, _ = market.MarketSummary.Ask.Float64()

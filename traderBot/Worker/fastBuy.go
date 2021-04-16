@@ -86,8 +86,9 @@ func (worker *Worker) FastTradeBuy() {
 				buyRate, _ := worker.BuyOrder.Limit.Float64()                          // цена покупки
 				fee, _ := worker.BuyOrder.CommissionReserved.Float64()                 // это комисиия в оредере
 
-				//price, _ := worker.BuyOrder.Price.Float64()       // это сумарная стоимость всех монет в ордере без комисии
 				priceRemaining, _ := worker.BuyOrder.Price.Float64() // это те деньни которые были потрачены на частичный выкуп
+
+				profitPrice := utils.Round(GetFee(buyQuantityAlt, buyRate, worker.Fee), 8)
 
 				if worker.BuyOrder.IsOpen {
 					if buyQuantityAlt == buyQuantityRemaining {
@@ -114,9 +115,6 @@ func (worker *Worker) FastTradeBuy() {
 							}
 						}
 					} else {
-						// частичный выкуп
-						//                 ((цена за все коины) + (коммисия)) / (количество монет)
-						profitPrice := utils.Round((worker.AvailableBTCCash+(fee*2))/buyQuantityAlt, 8)
 
 						buyAltCount := buyQuantityAlt - buyQuantityRemaining
 						worker.AddAlt(strings.Split(market.CurrencyPair, "-")[1], buyAltCount, buyRate, profitPrice)
@@ -128,9 +126,6 @@ func (worker *Worker) FastTradeBuy() {
 							" по " + utils.FloatToString(buyRate))
 					}
 				} else {
-					// выкупили полностью
-					//                 ((цена за все коины) + (коммисия)) / (количество монет)
-					profitPrice := utils.Round((worker.AvailableBTCCash+(fee*2))/buyQuantityAlt, 8)
 
 					worker.AddAlt(strings.Split(market.CurrencyPair, "-")[1], buyQuantityAlt, buyRate, profitPrice)
 					//                                         (цена за коины) + (коммисия)
@@ -143,4 +138,24 @@ func (worker *Worker) FastTradeBuy() {
 			}
 		}
 	}
+}
+
+func GetFee(quantity, price, baseFee float64) float64 {
+
+	/*
+		baseFee = 0.0075
+		q = 0.10560508
+		p = 0.00575602
+
+		f = q * p * baseFee = 0.00000455
+		needPrice = q * p + f = 0.00061241
+		needProfitPrice =  needPrice + (needPrice * (baseFee/100)) = 0.000617003075
+		profitOut = needPrice / q = 0.00584268
+	*/
+
+	fee := quantity * price * baseFee
+	needPrice := quantity*price + fee
+	needProfitPrice := needPrice + (needPrice * baseFee)
+	profitOut := needProfitPrice / quantity
+	return profitOut
 }

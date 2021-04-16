@@ -35,7 +35,7 @@ function UpdateHeaderInfo(id, bot) {
     for (let alt in bot.alt_balances) {
         if (bot.alt_balances.hasOwnProperty(alt) && !bot.alt_balances[alt].sell) {
             let altOrder = botBTCAvailable + (bot.alt_balances[alt].balance * bot.alt_balances[alt].top_asc);
-            let fee = (0.25 * altOrder) / 100;
+            let fee = 0.0075 * altOrder;
             altOrder = altOrder - fee;
             botBTCAvailable += altOrder;
         }

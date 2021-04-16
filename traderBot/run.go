@@ -6,8 +6,8 @@ import (
 	"github.com/TrashPony/Trader2/traderInfo"
 )
 
-const FEE = 0.0035 // в процентах 0.35, и сделано множителем тоесть поделено на 100
-const minBTC = 0.0005
+const FEE = 0.0075 // в процентах 0.75, и сделано множителем тоесть поделено на 100
+const minBTC = 0.0006
 
 func Run(account *traderInfo.Account) {
 
@@ -40,14 +40,14 @@ func Run(account *traderInfo.Account) {
 		fastInAlgorithm := &Analyze.AnalyzerInTrade{Name: "fast"}
 		fastOutAlgorithm := &Analyze.AnalyzerOutTrade{Name: "fast"}
 
-		newWorker := &Worker.Worker{TradeStrategy: "Fast", StartBTCCash: minBTC + 0.00005, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
-		newWorker.Run(FEE)
+		newWorker := &Worker.Worker{TradeStrategy: "Fast", StartBTCCash: minBTC + 0.00001, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
+		go newWorker.Run(FEE)
 
-		//newWorker2 := &Worker.Worker{TradeStrategy: "Slow", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
-		//newWorker2.Run(FEE)
-		//
-		//newWorker3 := &Worker.Worker{TradeStrategy: "VerySlow", StartBTCCash: 0.00075, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
-		//newWorker3.Run(FEE)
+		newWorker2 := &Worker.Worker{TradeStrategy: "Slow", StartBTCCash: minBTC + 0.00001, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
+		go newWorker2.Run(FEE)
+
+		newWorker3 := &Worker.Worker{TradeStrategy: "VerySlow", StartBTCCash: minBTC + 0.00001, InTradeStrategy: fastInAlgorithm, OutTradeStrategy: fastOutAlgorithm}
+		go newWorker3.Run(FEE)
 
 	} else {
 		println("Ты бомж :(")
